@@ -18,7 +18,7 @@
         }
         h1 {
             margin-bottom: 20px;
-            font-size: 3rem; /* Responsive font size */
+            font-size: 64px;
             text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7);
         }
         #controls {
@@ -54,7 +54,7 @@
             padding: 10px;
             border: none;
             border-radius: 5px;
-            font-size: 1rem; /* Responsive font size */
+            font-size: 16px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
         }
@@ -76,8 +76,10 @@
             opacity: 1;
         }
         .cell {
-            width: 60px; /* Fixed width */
-            height: 60px; /* Fixed height */
+            width: 10vw; /* Responsive width */
+            height: 10vw; /* Responsive height */
+            min-width: 50px; /* Minimum size */
+            min-height: 50px; /* Minimum size */
             border: 1px solid #ffffff;
             position: relative;
             cursor: pointer;
@@ -215,8 +217,8 @@
 
         function renderBoard() {
             boardElement.innerHTML = '';
-            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`; // Use fractional units for grid
-            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`; // Use fractional units for grid
+            boardElement.style.gridTemplateColumns = repeat(${boardSize}, 1fr); // Use fractional units for responsiveness
+            boardElement.style.gridTemplateRows = repeat(${boardSize}, 1fr); // Use fractional units for responsiveness
 
             for (let row = 0; row < boardSize; row++) {
                 for (let col = 0; col < boardSize; col++) {
@@ -227,7 +229,7 @@
 
                     if (board[row][col]) {
                         const piece = document.createElement('div');
-                        piece.className = `piece ${board[row][col]}`;
+                        piece.className = piece ${board[row][col]};
                         cell.appendChild(piece);
                     }
 
@@ -345,7 +347,7 @@
         }
 
         function updateStatus() {
-            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}`;
+            statusElement.textContent = Black: ${scores.black}, White: ${scores.white};
             statusElement.style.visibility = 'visible';
         }
 
