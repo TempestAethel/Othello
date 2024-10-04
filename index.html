@@ -18,10 +18,9 @@ body {
 
 h1 {
     margin-bottom: 20px;
-    font-size: 4em; /* Increase the font size */
+    font-size: 3em; /* Increase the font size */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for appeal */
     letter-spacing: 2px; /* Add some spacing between letters */
-    font-family: noricon , sans-serif;
 }
 
 #controls {
@@ -127,37 +126,11 @@ select:hover, button:hover {
     opacity: 1; /* Fully opaque on hover */
 }
 
-          #info-button {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(45deg, #1e90ff, #00bfff);
-        border: none;
-        color: white;
-        font-size: 2rem;
-        cursor: pointer;
-        padding: 10px 15px;
-        border-radius: 10px;
-        transition: background-color 0.3s, transform 0.2s;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        z-index: 1;
-    }
-    
-    #info-button:hover {
-        background: linear-gradient(45deg, #00bfff, #1e90ff);
-        transform: scale(1.05);
-    }
-
 
     </style>
 </head>
 <body>
     <h1>Othello</h1>
-
-      <button class="info-button" onclick="window.location.href='info.html'"style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2rem; cursor: pointer; z-index: 1;">
-       ℹ
-   </button>
-    
     <div id="controls">
         <label for="mode">Game Mode:</label>
         <select id="mode">
