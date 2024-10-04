@@ -35,6 +35,7 @@
             border: 2px solid #333;
             border-radius: 5px;
             transition: background 0.3s;
+            position: relative; /* Added to allow absolute positioning of pieces */
         }
 
         .cell:hover {
@@ -45,6 +46,11 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
+            position: absolute; /* Allows pieces to be positioned on top of the cell */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the piece in the cell */
+            z-index: 1; /* Ensure the piece is on top */
         }
 
         .black {
@@ -178,132 +184,149 @@
             }
         }
 
-        function validMove(row, col, color) {
-            if (board[row][col] !== null) return false;
+      function validMove(row, col, color) {
+    if (board[row][col] !== null) return false; // Cell is already occupied
 
-            const opponentColor = color === 'black' ? 'white' : 'black';
-            const directions = [
-                [-1, 0], [1, 0], [0, -1], [0, 1],
-                [-1, -1], [-1, 1], [1, -1], [1, 1]
-            ];
+    const opponent = color === 'black' ? 'white' : 'black';
+    let valid = false;
 
-            for (const [dx, dy] of directions) {
-                let x = row + dx, y = col + dy;
-                let hasOpponentPiece = false;
+    // Check all 8 directions
+    const directions = [
+        { x: 0, y: 1 },  // Right
+        { x: 1, y: 1 },  // Down-Right
+        { x: 1, y: 0 },  // Down
+        { x: 1, y: -1 }, // Down-Left
+        { x: 0, y: -1 }, // Left
+        { x: -1, y: -1 },// Up-Left
+        { x: -1, y: 0 }, // Up
+        { x: -1, y: 1 }  // Up-Right
+    ];
 
-                while (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
-                    if (board[x][y] === opponentColor) {
-                        hasOpponentPiece = true;
-                    } else if (board[x][y] === color) {
-                        if (hasOpponentPiece) return true;
-                        break;
-                    } else {
-                        break;
-                    }
-                    x += dx;
-                    y += dy;
+    for (const dir of directions) {
+        let x = row + dir.x;
+        let y = col + dir.y;
+        let foundOpponent = false;
+
+        while (x >= 0 && y >= 0 && x < board.length && y < board.length) {
+            if (board[x][y] === opponent) {
+                foundOpponent = true;
+            } else if (board[x][y] === color && foundOpponent) {
+                valid = true;
+                break;
+            } else {
+                break;
+            }
+            x += dir.x;
+            y += dir.y;
+        }
+    }
+
+    return valid;
+}
+
+function placePiece(row, col, color) {
+    board[row][col] = color;
+    flipPieces(row, col, color);
+}
+
+function flipPieces(row, col, color) {
+    const opponent = color === 'black' ? 'white' : 'black';
+    const directions = [
+        { x: 0, y: 1 },  // Right
+        { x: 1, y: 1 },  // Down-Right
+        { x: 1, y: 0 },  // Down
+        { x: 1, y: -1 }, // Down-Left
+        { x: 0, y: -1 }, // Left
+        { x: -1, y: -1 },// Up-Left
+        { x: -1, y: 0 }, // Up
+        { x: -1, y: 1 }  // Up-Right
+    ];
+
+    for (const dir of directions) {
+        let x = row + dir.x;
+        let y = col + dir.y;
+        const toFlip = [];
+
+        while (x >= 0 && y >= 0 && x < board.length && y < board.length) {
+            if (board[x][y] === opponent) {
+                toFlip.push({ x, y });
+            } else if (board[x][y] === color) {
+                for (const pos of toFlip) {
+                    board[pos.x][pos.y] = color; // Flip opponent's pieces
+                }
+                break;
+            } else {
+                break;
+            }
+            x += dir.x;
+            y += dir.y;
+        }
+    }
+}
+
+function easyAIMove() {
+    for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+            if (validMove(row, col, 'white')) {
+                placePiece(row, col, 'white');
+                return; // Make the first valid move found
+            }
+        }
+    }
+}
+
+function hardAIMove() {
+    let bestMove = null;
+    let bestScore = -Infinity;
+
+    for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+            if (validMove(row, col, 'white')) {
+                const score = evaluateMove(row, col);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = { row, col };
                 }
             }
-
-            return false;
         }
+    }
 
-        function placePiece(row, col, color) {
-            board[row][col] = color;
+    if (bestMove) {
+        placePiece(bestMove.row, bestMove.col, 'white');
+    }
+}
+
+function evaluateMove(row, col) {
+    // Simple evaluation function that counts how many pieces would be flipped
+    let score = 0;
+    const directions = [
+        { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 },
+        { x: 1, y: -1 }, { x: 0, y: -1 }, { x: -1, y: -1 },
+        { x: -1, y: 0 }, { x: -1, y: 1 }
+    ];
+
+    for (const dir of directions) {
+        let x = row + dir.x;
+        let y = col + dir.y;
+        let count = 0;
+
+        while (x >= 0 && y >= 0 && x < board.length && y < board.length) {
+            if (board[x][y] === 'white') {
+                count++;
+            } else if (board[x][y] === 'black') {
+                break; // Stop at our own pieces
+            } else {
+                count = 0; // No pieces to flip
+                break;
+            }
+            x += dir.x;
+            y += dir.y;
         }
+        score += count;
+    }
 
-        function flipPieces(row, col, color) {
-            const opponentColor = color === 'black' ? 'white' : 'black';
-            const directions = [
-                [-1, 0], [1, 0], [0, -1], [0, 1],
-                [-1, -1], [-1, 1], [1, -1], [1, 1]
-            ];
-
-            for (const [dx, dy] of directions) {
-                let x = row + dx, y = col + dy;
-                let piecesToFlip = [];
-
-                while (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
-                    if (board[x][y] === opponentColor) {
-                        piecesToFlip.push([x, y]);
-                    } else if (board[x][y] === color) {
-                        for (const [fx, fy] of piecesToFlip) {
-                            board[fx][fy] = color;
-                        }
-                        break;
-                    } else {
-                        break;
-                    }
-                    x += dx;
-                    y += dy;
-                }
-            }
-        }
-
-        function easyAIMove() {
-            const possibleMoves = [];
-            for (let row = 0; row < boardSize; row++) {
-                for (let col = 0; col < boardSize; col++) {
-                    if (validMove(row, col, 'white')) {
-                        possibleMoves.push([row, col]);
-                    }
-                }
-            }
-            if (possibleMoves.length > 0) {
-                const [row, col] = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-                cellClick(row, col);
-            }
-        }
-
-        function hardAIMove() {
-            // Basic logic for hard AI move: choose the best valid move (this can be improved)
-            let bestMove = null;
-            let bestScore = -1;
-
-            for (let row = 0; row < boardSize; row++) {
-                for (let col = 0; col < boardSize; col++) {
-                    if (validMove(row, col, 'white')) {
-                        let score = calculateFlips(row, col, 'white');
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestMove = [row, col];
-                        }
-                    }
-                }
-            }
-
-            if (bestMove) {
-                cellClick(bestMove[0], bestMove[1]);
-            }
-        }
-
-        function calculateFlips(row, col, color) {
-            const opponentColor = color === 'black' ? 'white' : 'black';
-            let score = 0;
-            const directions = [
-                [-1, 0], [1, 0], [0, -1], [0, 1],
-                [-1, -1], [-1, 1], [1, -1], [1, 1]
-            ];
-
-            for (const [dx, dy] of directions) {
-                let x = row + dx, y = col + dy;
-                let piecesToFlip = 0;
-
-                while (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
-                    if (board[x][y] === opponentColor) {
-                        piecesToFlip++;
-                    } else if (board[x][y] === color) {
-                        score += piecesToFlip;
-                        break;
-                    } else {
-                        break;
-                    }
-                    x += dx;
-                    y += dy;
-                }
-            }
-            return score;
-        }
+    return score;
+}
 
         function startGame() {
             initializeBoard();
