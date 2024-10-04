@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,6 +18,8 @@
         }
         h1 {
             margin-bottom: 20px;
+            font-size: 48px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
         }
         #controls {
             margin-bottom: 20px;
@@ -28,6 +31,21 @@
             background: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .info-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .info-button:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
         label {
             font-weight: bold;
@@ -100,10 +118,35 @@
         #reset:hover {
             background: #ff0000;
         }
+        #rules {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 100;
+        }
+        #close-rules {
+            background: #ff4444;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #close-rules:hover {
+            background: #ff0000;
+        }
     </style>
 </head>
 <body>
     <h1>Othello</h1>
+    <button class="info-button" id="infoButton">Info</button>
     <div id="controls">
         <label for="mode">Game Mode:</label>
         <select id="mode">
@@ -113,17 +156,31 @@
         </select>
         <label for="size">Board Size:</label>
         <select id="size">
-            <option value="8">8x8</option>
-            <option value="6">6x6</option>
             <option value="4">4x4</option>
+            <option value="6">6x6</option>
+            <option value="8">8x8</option>
             <option value="10">10x10</option>
             <option value="12">12x12</option>
         </select>
         <button id="start">Start Game</button>
     </div>
-    <div id="board" class="visible"></div>
+    <div id="board"></div>
     <button id="reset">Reset Game</button>
     <div id="status"></div>
+
+    <div id="rules">
+        <h2>Game Rules</h2>
+        <p>Othello is played on an 8x8 board with two players taking turns placing pieces. The objective is to have the majority of pieces on the board at the end of the game.</p>
+        <h3>Rules:</h3>
+        <ul>
+            <li>Players take turns placing their pieces on the board.</li>
+            <li>A piece can be placed if it outflanks one or more of the opponent's pieces in any direction (horizontally, vertically, or diagonally).</li>
+            <li>When a player places a piece, all opponent's pieces that are outflanked are flipped to the player's color.</li>
+            <li>The game ends when neither player can make a valid move.</li>
+            <li>The player with the most pieces on the board wins.</li>
+        </ul>
+        <button id="close-rules">Close</button>
+    </div>
 
     <script>
         const boardElement = document.getElementById('board');
@@ -132,6 +189,9 @@
         const sizeSelect = document.getElementById('size');
         const startButton = document.getElementById('start');
         const resetButton = document.getElementById('reset');
+        const rulesElement = document.getElementById('rules');
+        const infoButton = document.getElementById('infoButton');
+        const closeRulesButton = document.getElementById('close-rules');
 
         let boardSize = 8;
         let board = [];
@@ -194,28 +254,37 @@
                     }, 500);
                 }
             }
+            if (checkGameOver()) {
+                endGame();
+            }
         }
 
         function validMove(row, col) {
             if (board[row][col] !== null) return false;
 
             const directions = [
-                { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
-                { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
-                { x: 1, y: -1 }, { x: 1, y: 1 }
+                { x: 0, y: -1 }, // Up
+                { x: 0, y: 1 },  // Down
+                { x: -1, y: 0 }, // Left
+                { x: 1, y: 0 },  // Right
+                { x: -1, y: -1 }, // Up Left
+                { x: -1, y: 1 },  // Up Right
+                { x: 1, y: -1 },  // Down Left
+                { x: 1, y: 1 }    // Down Right
             ];
+
             for (let { x, y } of directions) {
                 let r = row + y;
                 let c = col + x;
-                let foundOpponent = false;
+                let hasOpponentPiece = false;
 
                 while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
                     if (board[r][c] === null) break;
                     if (board[r][c] === currentPlayer) {
-                        if (foundOpponent) return true;
+                        if (hasOpponentPiece) return true;
                         break;
                     }
-                    foundOpponent = true;
+                    hasOpponentPiece = true;
                     r += y;
                     c += x;
                 }
@@ -227,24 +296,20 @@
             board[row][col] = currentPlayer;
             flipPieces(row, col);
             updateScores();
-            if (checkGameOver()) {
-                gameEnded = true;
-                setTimeout(() => {
-                    const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
-                    alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
-                    resetGame();
-                }, 100);
-                return;
-            }
             currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-            renderBoard();
+            updateStatus();
         }
 
         function flipPieces(row, col) {
             const directions = [
-                { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
-                { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
-                { x: 1, y: -1 }, { x: 1, y: 1 }
+                { x: 0, y: -1 }, // Up
+                { x: 0, y: 1 },  // Down
+                { x: -1, y: 0 }, // Left
+                { x: 1, y: 0 },  // Right
+                { x: -1, y: -1 }, // Up Left
+                { x: -1, y: 1 },  // Up Right
+                { x: 1, y: -1 },  // Down Left
+                { x: 1, y: 1 }    // Down Right
             ];
 
             for (let { x, y } of directions) {
@@ -280,8 +345,8 @@
         }
 
         function updateStatus() {
-            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}. ${currentPlayer}'s turn.`;
-            statusElement.style.visibility = 'visible'; // Show status after game starts
+            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}`;
+            statusElement.style.visibility = 'visible';
         }
 
         function easyAIMove() {
@@ -342,23 +407,34 @@
             return false;
         }
 
+        function endGame() {
+            gameEnded = true;
+            const winner = scores.black > scores.white ? 'Black wins!' : (scores.white > scores.black ? 'White wins!' : 'It\'s a tie!');
+            statusElement.textContent = winner;
+            resetButton.style.display = 'block';
+        }
+
         function startGame() {
             boardSize = parseInt(sizeSelect.value);
             gameMode = modeSelect.value;
             initializeBoard();
-            document.getElementById('controls').style.display = 'none';  // Hide controls
+            document.getElementById('controls').style.display = 'none';
         }
 
         function resetGame() {
-            if (boardElement.classList.contains('visible')) {
-                initializeBoard();
-                return;
-            }
-            boardElement.classList.remove('visible');
-            document.getElementById('controls').style.display = 'block';  // Show controls
-            resetButton.style.display = 'none';  // Hide reset button
-            statusElement.style.visibility = 'hidden';  // Hide status
+            initializeBoard();
+            document.getElementById('controls').style.display = 'flex';
+            resetButton.style.display = 'none';
+            statusElement.style.visibility = 'hidden';
         }
+
+        infoButton.addEventListener('click', () => {
+            rulesElement.style.display = 'block';
+        });
+
+        closeRulesButton.addEventListener('click', () => {
+            rulesElement.style.display = 'none';
+        });
 
         startButton.addEventListener('click', startGame);
         resetButton.addEventListener('click', resetGame);
