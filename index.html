@@ -14,14 +14,10 @@
             margin: 0;
             background: linear-gradient(to right, #232526, #414345);
             color: white;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            font-family: Arial, sans-serif;
         }
         h1 {
             margin-bottom: 20px;
-            font-size: 64px;
-            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7);
-            font-family: 'Georgia', serif; /* More appealing font */
         }
         #controls {
             margin-bottom: 20px;
@@ -33,21 +29,6 @@
             background: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        .info-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .info-button:hover {
-            background: rgba(255, 255, 255, 0.2);
         }
         label {
             font-weight: bold;
@@ -69,7 +50,7 @@
             border: 2px solid #ffffff;
             margin: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            visibility: hidden; /* Start hidden */
+            visibility: hidden;
             transition: visibility 0s, opacity 0.5s linear;
             opacity: 0;
         }
@@ -78,10 +59,8 @@
             opacity: 1;
         }
         .cell {
-            width: 10vw; /* Responsive width */
-            height: 10vw; /* Responsive height */
-            min-width: 50px; /* Minimum size */
-            min-height: 50px; /* Minimum size */
+            width: 50px;
+            height: 50px;
             border: 1px solid #ffffff;
             position: relative;
             cursor: pointer;
@@ -122,35 +101,10 @@
         #reset:hover {
             background: #ff0000;
         }
-        #rules {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            color: white;
-            z-index: 100;
-        }
-        #close-rules {
-            background: #ff4444;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        #close-rules:hover {
-            background: #ff0000;
-        }
     </style>
 </head>
 <body>
     <h1>Othello</h1>
-    <button class="info-button" id="infoButton">Info</button>
     <div id="controls">
         <label for="mode">Game Mode:</label>
         <select id="mode">
@@ -160,31 +114,17 @@
         </select>
         <label for="size">Board Size:</label>
         <select id="size">
-            <option value="4">4x4</option>
+            <option value="8">8x8</option>
             <option value="6">6x6</option>
-            <option value="8" selected>8x8</option>
+            <option value="4">4x4</option>
             <option value="10">10x10</option>
             <option value="12">12x12</option>
         </select>
         <button id="start">Start Game</button>
     </div>
-    <div id="board"></div>
+    <div id="board" class="visible"></div>
     <button id="reset">Reset Game</button>
     <div id="status"></div>
-
-    <div id="rules">
-        <h2>Game Rules</h2>
-        <p>Othello is played on an 8x8 board with two players taking turns placing pieces. The objective is to have the majority of pieces on the board at the end of the game.</p>
-        <h3>Rules:</h3>
-        <ul>
-            <li>Players take turns placing their pieces on the board.</li>
-            <li>A piece can be placed if it outflanks one or more of the opponent's pieces in any direction (horizontally, vertically, or diagonally).</li>
-            <li>When a player places a piece, all opponent's pieces that are outflanked are flipped to the player's color.</li>
-            <li>The game ends when neither player can make a valid move.</li>
-            <li>The player with the most pieces on the board wins.</li>
-        </ul>
-        <button id="close-rules">Close</button>
-    </div>
 
     <script>
         const boardElement = document.getElementById('board');
@@ -193,9 +133,6 @@
         const sizeSelect = document.getElementById('size');
         const startButton = document.getElementById('start');
         const resetButton = document.getElementById('reset');
-        const rulesElement = document.getElementById('rules');
-        const infoButton = document.getElementById('infoButton');
-        const closeRulesButton = document.getElementById('close-rules');
 
         let boardSize = 8;
         let board = [];
@@ -213,14 +150,15 @@
             board[mid][mid - 1] = 'black';
             renderBoard();
             gameEnded = false;
-            boardElement.classList.add('visible'); // Show board when initialized
+            boardElement.classList.add('visible');
+            statusElement.style.visibility = 'hidden'; // Hide status initially
             resetButton.style.display = 'block'; // Show reset button
         }
 
         function renderBoard() {
             boardElement.innerHTML = '';
-            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`; // Use fractional units for responsiveness
-            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`; // Use fractional units for responsiveness
+            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 50px)`;
+            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 50px)`;
 
             for (let row = 0; row < boardSize; row++) {
                 for (let col = 0; col < boardSize; col++) {
@@ -239,15 +177,15 @@
                     boardElement.appendChild(cell);
                 }
             }
-            updateScores();
+            updateStatus();
         }
 
         function handleCellClick(row, col) {
             if (!gameEnded && validMove(row, col)) {
                 placePiece(row, col);
-                if (gameMode.includes('AI')) {
+                if (gameMode.includes('AI') && !gameEnded) {
                     setTimeout(() => {
-                        if (!gameEnded) {
+                        if (currentPlayer === 'white') {
                             if (gameMode === 'easyAI') {
                                 easyAIMove();
                             } else {
@@ -257,37 +195,28 @@
                     }, 500);
                 }
             }
-            if (checkGameOver()) {
-                endGame();
-            }
         }
 
         function validMove(row, col) {
             if (board[row][col] !== null) return false;
 
             const directions = [
-                { x: 0, y: -1 }, // Up
-                { x: 0, y: 1 },  // Down
-                { x: -1, y: 0 }, // Left
-                { x: 1, y: 0 },  // Right
-                { x: -1, y: -1 }, // Up Left
-                { x: -1, y: 1 },  // Up Right
-                { x: 1, y: -1 },  // Down Left
-                { x: 1, y: 1 }    // Down Right
+                { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
+                { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
+                { x: 1, y: -1 }, { x: 1, y: 1 }
             ];
-
             for (let { x, y } of directions) {
                 let r = row + y;
                 let c = col + x;
-                let hasOpponentPiece = false;
+                let foundOpponent = false;
 
                 while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
                     if (board[r][c] === null) break;
                     if (board[r][c] === currentPlayer) {
-                        if (hasOpponentPiece) return true;
+                        if (foundOpponent) return true;
                         break;
                     }
-                    hasOpponentPiece = true;
+                    foundOpponent = true;
                     r += y;
                     c += x;
                 }
@@ -299,20 +228,24 @@
             board[row][col] = currentPlayer;
             flipPieces(row, col);
             updateScores();
+            if (checkGameOver()) {
+                gameEnded = true;
+                setTimeout(() => {
+                    const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
+                    alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
+                    resetGame();
+                }, 100);
+                return;
+            }
             currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-            updateStatus();
+            renderBoard();
         }
 
         function flipPieces(row, col) {
             const directions = [
-                { x: 0, y: -1 }, // Up
-                { x: 0, y: 1 },  // Down
-                { x: -1, y: 0 }, // Left
-                { x: 1, y: 0 },  // Right
-                { x: -1, y: -1 }, // Up Left
-                { x: -1, y: 1 },  // Up Right
-                { x: 1, y: -1 },  // Down Left
-                { x: 1, y: 1 }    // Down Right
+                { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
+                { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
+                { x: 1, y: -1 }, { x: 1, y: 1 }
             ];
 
             for (let { x, y } of directions) {
@@ -348,8 +281,8 @@
         }
 
         function updateStatus() {
-            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}`;
-            statusElement.style.visibility = 'visible';
+            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}. ${currentPlayer}'s turn.`;
+            statusElement.style.visibility = 'visible'; // Show status after game starts
         }
 
         function easyAIMove() {
@@ -410,43 +343,29 @@
             return false;
         }
 
-        function endGame() {
-            gameEnded = true;
-            const winner = scores.black > scores.white ? 'Black wins!' : (scores.white > scores.black ? 'White wins!' : 'It\'s a tie!');
-            statusElement.textContent = winner;
-            resetButton.style.display = 'block';
-            boardElement.classList.remove('visible'); // Hide board at end
-        }
-
         function startGame() {
             boardSize = parseInt(sizeSelect.value);
             gameMode = modeSelect.value;
             initializeBoard();
-            document.getElementById('controls').style.display = 'none';
+            document.getElementById('controls').style.display = 'none';  // Hide controls
         }
 
         function resetGame() {
-            document.getElementById('controls').style.display = 'flex';
-            resetButton.style.display = 'none';
-            statusElement.style.visibility = 'hidden';
-            boardElement.classList.remove('visible'); // Hide board on reset
-            boardElement.innerHTML = ''; // Clear the board
+            boardElement.classList.remove('visible');
+            document.getElementById('controls').style.display = 'block';  // Show controls
+            resetButton.style.display = 'none';  // Hide reset button
+            statusElement.style.visibility = 'hidden';  // Hide status
             scores = { black: 2, white: 2 }; // Reset scores
+            currentPlayer = 'black'; // Reset current player
+            gameEnded = false; // Reset game ended state
         }
 
-        infoButton.addEventListener('click', () => {
-            rulesElement.style.display = 'block';
-        });
-
-        closeRulesButton.addEventListener('click', () => {
-            rulesElement.style.display = 'none';
-        });
-
+        // Event listeners
         startButton.addEventListener('click', startGame);
         resetButton.addEventListener('click', resetGame);
 
-        // Initialize the game
-        initializeBoard();
+        // Initialize the game (hide the board initially)
+        resetGame();
     </script>
 </body>
 </html>
