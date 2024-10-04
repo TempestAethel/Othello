@@ -6,24 +6,29 @@
     <title>Othello Game</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #232526, #414345);
-            color: white;
-            font-family: Arial, sans-serif;
-            position: relative; /* Added to position the info button */
-        }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(to right, #2c3e50, #4ca1af); /* Updated gradient */
+    color: white;
+    font-family: Arial, sans-serif;
+    position: relative;
+}
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 3em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-            letter-spacing: 2px;
-        }
+h1 {
+    position: absolute; /* Changed to absolute */
+    top: 20px; /* Position from the top */
+    left: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
+    margin: 0;
+    font-size: 4em; /* Increased size for more prominence */
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8); /* More pronounced shadow */
+    letter-spacing: 3px; /* More spacing between letters */
+}
+
 
         #controls {
             margin-bottom: 20px;
