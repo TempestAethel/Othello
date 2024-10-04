@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,6 +36,10 @@
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             width: 300px;
+            position: absolute; /* Adjusted position to center */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centering controls */
         }
 
         label {
@@ -138,6 +143,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
+            width: auto; /* Changed to auto for proper sizing */
         }
 
         #infoButton:hover {
@@ -253,15 +259,10 @@
         function handleCellClick(row, col) {
             if (!gameEnded && validMove(row, col)) {
                 placePiece(row, col);
-                if (gameMode.includes('AI') && !gameEnded) {
+                if (gameMode.includes('AI') && currentPlayer === 'white') {
                     setTimeout(() => {
-                        if (currentPlayer === 'white') {
-                            if (gameMode === 'easyAI') {
-                                easyAIMove();
-                            } else {
-                                hardAIMove();
-                            }
-                        }
+                        if (gameMode === 'easyAI') easyAIMove();
+                        else hardAIMove();
                     }, 500);
                 }
             }
