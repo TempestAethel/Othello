@@ -21,12 +21,14 @@
         }
         #controls {
             margin-bottom: 20px;
+            text-align: center;
         }
         #board {
             display: grid;
             border: 2px solid #ffffff;
             margin: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            visibility: hidden;
         }
         .cell {
             width: 50px;
@@ -95,6 +97,7 @@
         let currentPlayer = 'black';
         let gameMode = '2player';
         let scores = { black: 2, white: 2 };
+        let gameEnded = false;
 
         function initializeBoard() {
             board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
@@ -104,6 +107,8 @@
             board[mid - 1][mid] = 'black';
             board[mid][mid - 1] = 'black';
             renderBoard();
+            gameEnded = false;
+            boardElement.style.visibility = 'visible';
         }
 
         function renderBoard() {
@@ -132,9 +137,9 @@
         }
 
         function handleCellClick(row, col) {
-            if (validMove(row, col)) {
+            if (!gameEnded && validMove(row, col)) {
                 placePiece(row, col);
-                if (gameMode.includes('AI')) {
+                if (gameMode.includes('AI') && !gameEnded) {
                     setTimeout(() => {
                         if (currentPlayer === 'white') {
                             if (gameMode === 'easyAI') {
@@ -179,6 +184,14 @@
             board[row][col] = currentPlayer;
             flipPieces(row, col);
             updateScores();
+            if (checkGameOver()) {
+                gameEnded = true;
+                setTimeout(() => {
+                    alert(`Game Over! Final Score - Black: ${scores.black}, White: ${scores.white}`);
+                    resetGame();
+                }, 100);
+                return;
+            }
             currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
             renderBoard();
         }
@@ -219,6 +232,10 @@
                     if (cell === 'white') scores.white++;
                 }
             }
+            updateStatus();
+        }
+
+        function updateStatus() {
             statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}. ${currentPlayer}'s turn.`;
         }
 
@@ -271,21 +288,33 @@
             return score;
         }
 
+        function checkGameOver() {
+            const validMoves = getValidMoves();
+            if (validMoves.length === 0) {
+                currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+                return getValidMoves().length === 0;
+            }
+            return false;
+        }
+
         function startGame() {
             boardSize = parseInt(sizeSelect.value);
             gameMode = modeSelect.value;
             initializeBoard();
+            document.getElementById('controls').style.display = 'none';  // Hide controls
         }
 
         function resetGame() {
             initializeBoard();
+            document.getElementById('controls').style.display = 'block';  // Show controls
+            boardElement.style.visibility = 'hidden';  // Hide board until game starts
         }
 
         startButton.addEventListener('click', startGame);
         resetButton.addEventListener('click', resetGame);
 
         // Initialize the game
-        initializeBoard();
+        resetGame();
     </script>
 </body>
 </html>
