@@ -5,102 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello Game</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #232526, #414345);
-            color: white;
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        #controls {
-            margin-bottom: 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        label {
-            font-weight: bold;
-        }
-        select, button {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-        select:hover, button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
-        }
-        #board {
-            display: grid;
-            border: 2px solid #ffffff;
-            margin: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            visibility: hidden;
-            transition: visibility 0s, opacity 0.5s linear;
-            opacity: 0;
-        }
-        #board.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-        .cell {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #ffffff;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .cell:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .piece {
-            position: absolute;
-            width: 80%;
-            height: 80%;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .black {
-            background: black;
-        }
-        .white {
-            background: white;
-        }
-        #status {
-            margin-top: 20px;
-            visibility: hidden;
-        }
-        #reset {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background: #ff4444;
-            color: white;
-            transition: background 0.3s;
-        }
-        #reset:hover {
-            background: #ff0000;
-        }
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(to right, #232526, #414345);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#controls {
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Ensures vertical stacking */
+    gap: 15px; /* Space between controls */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+label {
+    font-weight: bold;
+}
+
+select, button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    width: 100%; /* Make controls full width */
+}
+
+select:hover, button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+#board {
+    display: grid;
+    border: 2px solid #ffffff;
+    margin: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.5s linear;
+    opacity: 0;
+}
+
+#board.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.cell {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ffffff;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.cell:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.piece {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.black {
+    background: black;
+}
+
+.white {
+    background: white;
+}
+
+#status {
+    margin-top: 20px;
+    visibility: hidden;
+}
+
+#reset {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #ff4444;
+    color: white;
+    transition: background 0.3s;
+}
+
+#reset:hover {
+    background: #ff0000;
+}
     </style>
 </head>
 <body>
