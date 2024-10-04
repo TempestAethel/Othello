@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,8 +14,7 @@
             margin: 0;
             background: linear-gradient(to right, #232526, #414345);
             color: white;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            font-family: Arial, sans-serif;
         }
         h1 {
             margin-bottom: 20px;
@@ -67,7 +67,7 @@
             border: 2px solid #ffffff;
             margin: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            visibility: hidden; /* Start hidden */
+            visibility: hidden;
             transition: visibility 0s, opacity 0.5s linear;
             opacity: 0;
         }
@@ -76,10 +76,8 @@
             opacity: 1;
         }
         .cell {
-            width: 10vw; /* Responsive width */
-            height: 10vw; /* Responsive height */
-            min-width: 50px; /* Minimum size */
-            min-height: 50px; /* Minimum size */
+            width: 50px;
+            height: 50px;
             border: 1px solid #ffffff;
             position: relative;
             cursor: pointer;
@@ -211,14 +209,15 @@
             board[mid][mid - 1] = 'black';
             renderBoard();
             gameEnded = false;
-            boardElement.classList.add('visible'); // Show board when initialized
+            boardElement.classList.add('visible');
+            statusElement.style.visibility = 'hidden'; // Hide status initially
             resetButton.style.display = 'block'; // Show reset button
         }
 
         function renderBoard() {
             boardElement.innerHTML = '';
-            boardElement.style.gridTemplateColumns = repeat(${boardSize}, 1fr); // Use fractional units for responsiveness
-            boardElement.style.gridTemplateRows = repeat(${boardSize}, 1fr); // Use fractional units for responsiveness
+            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 50px)`;
+            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 50px)`;
 
             for (let row = 0; row < boardSize; row++) {
                 for (let col = 0; col < boardSize; col++) {
@@ -229,7 +228,7 @@
 
                     if (board[row][col]) {
                         const piece = document.createElement('div');
-                        piece.className = piece ${board[row][col]};
+                        piece.className = `piece ${board[row][col]}`;
                         cell.appendChild(piece);
                     }
 
@@ -238,15 +237,14 @@
                 }
             }
             updateStatus();
-            boardElement.style.visibility = 'visible'; // Make board visible after rendering
         }
 
         function handleCellClick(row, col) {
             if (!gameEnded && validMove(row, col)) {
                 placePiece(row, col);
-                if (gameMode.includes('AI')) {
+                if (gameMode.includes('AI') && !gameEnded) {
                     setTimeout(() => {
-                        if (!gameEnded) {
+                        if (currentPlayer === 'white') {
                             if (gameMode === 'easyAI') {
                                 easyAIMove();
                             } else {
@@ -347,7 +345,7 @@
         }
 
         function updateStatus() {
-            statusElement.textContent = Black: ${scores.black}, White: ${scores.white};
+            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}`;
             statusElement.style.visibility = 'visible';
         }
 
@@ -414,7 +412,6 @@
             const winner = scores.black > scores.white ? 'Black wins!' : (scores.white > scores.black ? 'White wins!' : 'It\'s a tie!');
             statusElement.textContent = winner;
             resetButton.style.display = 'block';
-            boardElement.classList.remove('visible'); // Hide board at end
         }
 
         function startGame() {
@@ -425,12 +422,10 @@
         }
 
         function resetGame() {
+            initializeBoard();
             document.getElementById('controls').style.display = 'flex';
             resetButton.style.display = 'none';
             statusElement.style.visibility = 'hidden';
-            boardElement.classList.remove('visible'); // Hide board on reset
-            boardElement.innerHTML = ''; // Clear the board
-            scores = { black: 2, white: 2 }; // Reset scores
         }
 
         infoButton.addEventListener('click', () => {
