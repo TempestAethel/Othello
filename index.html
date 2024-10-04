@@ -76,10 +76,8 @@
             opacity: 1;
         }
         .cell {
-            width: 10vw; /* Responsive width */
-            height: 10vw; /* Responsive height */
-            min-width: 50px; /* Minimum size */
-            min-height: 50px; /* Minimum size */
+            width: 60px; /* Fixed width */
+            height: 60px; /* Fixed height */
             border: 1px solid #ffffff;
             position: relative;
             cursor: pointer;
@@ -217,8 +215,8 @@
 
         function renderBoard() {
             boardElement.innerHTML = '';
-            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`; // Use fractional units for responsiveness
-            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`; // Use fractional units for responsiveness
+            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`; // Use fractional units for grid
+            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`; // Use fractional units for grid
 
             for (let row = 0; row < boardSize; row++) {
                 for (let col = 0; col < boardSize; col++) {
