@@ -179,9 +179,33 @@
         }
 
         function validMove(row, col, color) {
-            // Implement move validation according to Othello rules
-            // Placeholder: Always returns true for simplicity
-            return true;
+            if (board[row][col] !== null) return false;
+
+            const opponentColor = color === 'black' ? 'white' : 'black';
+            const directions = [
+                [-1, 0], [1, 0], [0, -1], [0, 1],
+                [-1, -1], [-1, 1], [1, -1], [1, 1]
+            ];
+
+            for (const [dx, dy] of directions) {
+                let x = row + dx, y = col + dy;
+                let hasOpponentPiece = false;
+
+                while (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
+                    if (board[x][y] === opponentColor) {
+                        hasOpponentPiece = true;
+                    } else if (board[x][y] === color) {
+                        if (hasOpponentPiece) return true;
+                        break;
+                    } else {
+                        break;
+                    }
+                    x += dx;
+                    y += dy;
+                }
+            }
+
+            return false;
         }
 
         function placePiece(row, col, color) {
@@ -189,16 +213,96 @@
         }
 
         function flipPieces(row, col, color) {
-            // Implement piece flipping according to Othello rules
-            // Placeholder: No flipping logic implemented
+            const opponentColor = color === 'black' ? 'white' : 'black';
+            const directions = [
+                [-1, 0], [1, 0], [0, -1], [0, 1],
+                [-1, -1], [-1, 1], [1, -1], [1, 1]
+            ];
+
+            for (const [dx, dy] of directions) {
+                let x = row + dx, y = col + dy;
+                let piecesToFlip = [];
+
+                while (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
+                    if (board[x][y] === opponentColor) {
+                        piecesToFlip.push([x, y]);
+                    } else if (board[x][y] === color) {
+                        for (const [fx, fy] of piecesToFlip) {
+                            board[fx][fy] = color;
+                        }
+                        break;
+                    } else {
+                        break;
+                    }
+                    x += dx;
+                    y += dy;
+                }
+            }
         }
 
         function easyAIMove() {
-            // Implement logic for easy AI move
+            const possibleMoves = [];
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    if (validMove(row, col, 'white')) {
+                        possibleMoves.push([row, col]);
+                    }
+                }
+            }
+            if (possibleMoves.length > 0) {
+                const [row, col] = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                cellClick(row, col);
+            }
         }
 
         function hardAIMove() {
-            // Implement logic for hard AI move
+            // Basic logic for hard AI move: choose the best valid move (this can be improved)
+            let bestMove = null;
+            let bestScore = -1;
+
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    if (validMove(row, col, 'white')) {
+                        let score = calculateFlips(row, col, 'white');
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMove = [row, col];
+                        }
+                    }
+                }
+            }
+
+            if (bestMove) {
+                cellClick(bestMove[0], bestMove[1]);
+            }
+        }
+
+        function calculateFlips(row, col, color) {
+            const opponentColor = color === 'black' ? 'white' : 'black';
+            let score = 0;
+            const directions = [
+                [-1, 0], [1, 0], [0, -1], [0, 1],
+                [-1, -1], [-1, 1], [1, -1], [1, 1]
+            ];
+
+            for (const [dx, dy] of directions) {
+                let x = row + dx, y = col + dy;
+                let piecesToFlip = 0;
+
+                while (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
+                    if (board[x][y] === opponentColor) {
+                        piecesToFlip++;
+                    } else if (board[x][y] === color) {
+                        score += piecesToFlip;
+                        break;
+                    } else {
+                        break;
+                    }
+                    x += dx;
+                    y += dy;
+                }
+            }
+            return score;
         }
 
         function startGame() {
