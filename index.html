@@ -80,6 +80,10 @@
             font-size: 16px;
             margin-right: 10px;
         }
+
+        #board-size {
+            width: 80px;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +93,7 @@
             <option value="1">Vs Easy Computer</option>
             <option value="2">Vs Hard Computer</option>
         </select>
+        <input type="number" id="board-size" min="4" max="12" value="8">
         <button id="start-button">Start Game</button>
         <button id="reset-button" style="display:none;">Reset Game</button>
     </div>
@@ -104,6 +109,7 @@
         const startButton = document.getElementById('start-button');
         const resetButton = document.getElementById('reset-button');
         const playerScores = document.getElementById('player-scores');
+        const boardSizeInput = document.getElementById('board-size');
 
         let board = [];
         let currentPlayer = 'black';
@@ -111,13 +117,16 @@
         let gameMode = 0; // 0 = 2 Player, 1 = Easy AI, 2 = Hard AI
         let blackScore = 2;
         let whiteScore = 2;
+        let boardSize = 8;
 
         function initializeBoard() {
-            board = Array(8).fill(null).map(() => Array(8).fill(null));
-            board[3][3] = 'white';
-            board[3][4] = 'black';
-            board[4][3] = 'black';
-            board[4][4] = 'white';
+            boardSize = parseInt(boardSizeInput.value);
+            board = Array(boardSize).fill(null).map(() => Array(boardSize).fill(null));
+            const mid = Math.floor(boardSize / 2);
+            board[mid - 1][mid - 1] = 'white';
+            board[mid][mid] = 'white';
+            board[mid - 1][mid] = 'black';
+            board[mid][mid - 1] = 'black';
             renderBoard();
             updateScores();
             statusText.innerText = "Player Black's turn";
@@ -125,8 +134,9 @@
 
         function renderBoard() {
             boardElement.innerHTML = '';
-            for (let row = 0; row < 8; row++) {
-                for (let col = 0; col < 8; col++) {
+            boardElement.style.gridTemplateColumns = `repeat(${board.length}, 60px)`;
+            for (let row = 0; row < board.length; row++) {
+                for (let col = 0; col < board[row].length; col++) {
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
                     cell.dataset.row = row;
@@ -170,7 +180,6 @@
 
         function validMove(row, col, color) {
             // Implement move validation according to Othello rules
-            // Returns true if the move is valid, otherwise false
             return true; // Placeholder
         }
 
@@ -211,6 +220,7 @@
             resetGame();
             gameMode = parseInt(modeSelection.value);
         });
+        boardSizeInput.addEventListener('change', resetGame); // Reset game on board size change
     </script>
 </body>
 </html>
