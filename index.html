@@ -15,13 +15,14 @@
             background: linear-gradient(to right, #232526, #414345);
             color: white;
             font-family: Arial, sans-serif;
+            position: relative; /* Added to position the info button */
         }
 
         h1 {
             margin-bottom: 20px;
-            font-size: 3em; 
+            font-size: 3em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-            letter-spacing: 2px; 
+            letter-spacing: 2px;
         }
 
         #controls {
@@ -29,28 +30,27 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 20px; 
+            gap: 20px;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.8); 
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            width: 300px; 
-            position: relative;
+            width: 300px;
         }
 
         label {
             font-weight: bold;
-            font-size: 1.2em; 
+            font-size: 1.2em;
         }
 
         select, button {
-            padding: 12px; 
+            padding: 12px;
             border: none;
             border-radius: 5px;
-            font-size: 18px; 
+            font-size: 18px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
-            width: 100%; 
+            width: 100%;
         }
 
         select:hover, button:hover {
@@ -107,40 +107,38 @@
         #status {
             margin-top: 20px;
             visibility: hidden;
-            text-align: center;
         }
 
         #reset {
-            display: none; 
-            margin: 10px auto; 
+            display: none;
+            margin: 10px auto;
             padding: 10px;
             border-radius: 5px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2); 
-            color: white;
-            font-size: 16px; 
-            transition: background 0.3s, transform 0.2s, opacity 0.3s;
-            opacity: 0.8; 
-            width: 150px; 
-        }
-
-        #reset:hover {
-            background: rgba(255, 255, 255, 0.3); 
-            opacity: 1; 
-        }
-
-        #infoButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
             border: none;
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s, opacity 0.3s;
+            opacity: 0.8;
+            width: 150px;
+        }
+
+        #reset:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+        }
+
+        #infoButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
             border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
         }
 
         #infoButton:hover {
@@ -150,27 +148,14 @@
         #rules {
             display: none;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border-radius: 10px;
-            z-index: 10;
+            top: 60px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 5px;
             color: white;
-        }
-
-        #rules button {
-            margin-top: 10px;
-            padding: 10px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-        }
-
-        #rules button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            width: 200px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -183,7 +168,7 @@
             <option value="easyAI">Easy AI</option>
             <option value="hardAI">Hard AI</option>
         </select>
-
+   
         <label for="size">Board Size:</label>
         <select id="size">
             <option value="4">4x4</option>
@@ -193,23 +178,22 @@
             <option value="12">12x12</option>
             <option value="14">14x14</option>
         </select>
-
+  
         <button id="start">Start Game</button>
-    </div>
+     </div>
+    <div id="board" class="visible"></div>
     <button id="reset">Reset Game</button>
     <div id="status"></div>
-    <button id="infoButton">Info</button>
     
+    <button id="infoButton">Info</button>
     <div id="rules">
-        <h2>Othello Rules</h2>
-        <p>1. The game is played on an 8x8 board.</p>
-        <p>2. Each player takes turns placing a piece on the board.</p>
-        <p>3. A piece can be placed if it captures at least one opponent's piece.</p>
-        <p>4. The game ends when no valid moves are left, and the player with the most pieces wins.</p>
-        <button onclick="toggleRules()">Close</button>
+        <h3>Othello Rules</h3>
+        <p>1. Players take turns placing pieces on the board.</p>
+        <p>2. A piece must outflank one or more of the opponent's pieces.</p>
+        <p>3. All outflanked pieces are flipped to the current player's color.</p>
+        <p>4. The game ends when neither player can make a move.</p>
+        <p>5. The player with the most pieces on the board wins.</p>
     </div>
-
-    <div id="board" class="visible"></div>
 
     <script>
         const boardElement = document.getElementById('board');
@@ -267,7 +251,7 @@
             updateStatus();
         }
 
-               function handleCellClick(row, col) {
+        function handleCellClick(row, col) {
             if (!gameEnded && validMove(row, col)) {
                 placePiece(row, col);
                 if (gameMode.includes('AI') && !gameEnded) {
