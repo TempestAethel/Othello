@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Othello Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #000000, #434343);
+            color: white;
+            overflow: hidden;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            border: 2px solid #333;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .piece {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .black {
+            background-color: black;
+        }
+
+        .white {
+            background-color: white;
+        }
+
+        .status, .controls {
+            margin: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: #e74c3c;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <select id="mode-selection">
+            <option value="0">2 Player Mode</option>
+            <option value="1">Vs Easy Computer</option>
+            <option value="2">Vs Hard Computer</option>
+        </select>
+        <button id="start-button">Start Game</button>
+        <button id="reset-button" style="display:none;">Reset Game</button>
+    </div>
+
+    <div class="board" id="board"></div>
+    <div class="status" id="game-status"></div>
+    <div id="player-scores"></div>
+
+    <script>
+        const boardElement = document.getElementById('board');
+        const statusText = document.getElementById('game-status');
+        const modeSelection = document.getElementById('mode-selection');
+        const startButton = document.getElementById('start-button');
+        const resetButton = document.getElementById('reset-button');
+        const playerScores = document.getElementById('player-scores');
+
+        let board = [];
+        let currentPlayer = 'black';
+        let gameActive = false;
+        let gameMode = 0; // 0 = 2 Player, 1 = Easy AI, 2 = Hard AI
+        let blackScore = 2;
+        let whiteScore = 2;
+
+        function initializeBoard() {
+            board = Array(8).fill(null).map(() => Array(8).fill(null));
+            board[3][3] = 'white';
+            board[3][4] = 'black';
+            board[4][3] = 'black';
+            board[4][4] = 'white';
+            renderBoard();
+            updateScores();
+            statusText.innerText = "Player Black's turn";
+        }
+
+        function renderBoard() {
+            boardElement.innerHTML = '';
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+
+                    if (board[row][col]) {
+                        const piece = document.createElement('div');
+                        piece.classList.add('piece', board[row][col]);
+                        cell.appendChild(piece);
+                    }
+
+                    cell.addEventListener('click', () => cellClick(row, col));
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        function updateScores() {
+            blackScore = board.flat().filter(cell => cell === 'black').length;
+            whiteScore = board.flat().filter(cell => cell === 'white').length;
+            playerScores.innerText = `Black: ${blackScore} | White: ${whiteScore}`;
+        }
+
+        function cellClick(row, col) {
+            if (!gameActive || board[row][col] !== null || !validMove(row, col, currentPlayer)) {
+                return;
+            }
+
+            placePiece(row, col, currentPlayer);
+            flipPieces(row, col, currentPlayer);
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            updateScores();
+            statusText.innerText = `Player ${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s turn`;
+
+            if (gameMode === 1 && currentPlayer === 'white') {
+                setTimeout(() => easyAIMove(), 500);
+            } else if (gameMode === 2 && currentPlayer === 'white') {
+                setTimeout(() => hardAIMove(), 500);
+            }
+        }
+
+        function validMove(row, col, color) {
+            // Implement move validation according to Othello rules
+            // Returns true if the move is valid, otherwise false
+            return true; // Placeholder
+        }
+
+        function placePiece(row, col, color) {
+            board[row][col] = color;
+        }
+
+        function flipPieces(row, col, color) {
+            // Implement piece flipping according to Othello rules
+        }
+
+        function easyAIMove() {
+            // Implement logic for easy AI move
+        }
+
+        function hardAIMove() {
+            // Implement logic for hard AI move
+        }
+
+        function startGame() {
+            initializeBoard();
+            gameActive = true;
+            startButton.style.display = 'none';
+            resetButton.style.display = 'block';
+        }
+
+        function resetGame() {
+            initializeBoard();
+            gameActive = false;
+            startButton.style.display = 'block';
+            resetButton.style.display = 'none';
+            statusText.innerText = '';
+        }
+
+        startButton.addEventListener('click', startGame);
+        resetButton.addEventListener('click', resetGame);
+        modeSelection.addEventListener('change', () => {
+            resetGame();
+            gameMode = parseInt(modeSelection.value);
+        });
+    </script>
+</body>
+</html>
