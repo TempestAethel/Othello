@@ -22,6 +22,9 @@
         #controls {
             margin-bottom: 20px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         #board {
             display: grid;
@@ -58,11 +61,12 @@
         }
         #status {
             margin-top: 20px;
+            visibility: hidden;
         }
     </style>
 </head>
 <body>
-    <h1>Othello Game</h1>
+    <h1>Othello</h1>
     <div id="controls">
         <label for="mode">Game Mode:</label>
         <select id="mode">
@@ -79,9 +83,9 @@
             <option value="12">12x12</option>
         </select>
         <button id="start">Start Game</button>
-        <button id="reset">Reset Game</button>
     </div>
     <div id="board"></div>
+    <button id="reset" style="display: none;">Reset Game</button>
     <div id="status"></div>
 
     <script>
@@ -109,6 +113,7 @@
             renderBoard();
             gameEnded = false;
             boardElement.style.visibility = 'visible';
+            statusElement.style.visibility = 'hidden'; // Hide status initially
         }
 
         function renderBoard() {
@@ -187,7 +192,8 @@
             if (checkGameOver()) {
                 gameEnded = true;
                 setTimeout(() => {
-                    alert(`Game Over! Final Score - Black: ${scores.black}, White: ${scores.white}`);
+                    const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
+                    alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
                     resetGame();
                 }, 100);
                 return;
@@ -237,6 +243,7 @@
 
         function updateStatus() {
             statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}. ${currentPlayer}'s turn.`;
+            statusElement.style.visibility = 'visible'; // Show status after game starts
         }
 
         function easyAIMove() {
@@ -302,12 +309,15 @@
             gameMode = modeSelect.value;
             initializeBoard();
             document.getElementById('controls').style.display = 'none';  // Hide controls
+            resetButton.style.display = 'block';  // Show reset button
         }
 
         function resetGame() {
             initializeBoard();
             document.getElementById('controls').style.display = 'block';  // Show controls
+            resetButton.style.display = 'none';  // Hide reset button
             boardElement.style.visibility = 'hidden';  // Hide board until game starts
+            statusElement.style.visibility = 'hidden';  // Hide status
         }
 
         startButton.addEventListener('click', startGame);
