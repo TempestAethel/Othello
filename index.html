@@ -1,152 +1,163 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello Game</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #232526, #414345);
-            color: white;
-            font-family: Arial, sans-serif;
-        }
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(to right, #232526, #414345);
+    color: white;
+    font-family: Arial, sans-serif;
+}
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 3em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-            letter-spacing: 2px;
-        }
+h1 {
+    margin-bottom: 20px;
+    font-size: 4em; /* Increase the font size */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a shadow for appeal */
+    letter-spacing: 2px; /* Add some spacing between letters */
+    font-family: noricon , sans-serif;
+}
 
-        #controls {
-            margin-bottom: 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            width: 300px;
-        }
+#controls {
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Ensures vertical stacking */
+    gap: 20px; /* Increased gap between controls */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8); /* Darker background for more contrast */
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    width: 300px; /* Set a fixed width for the controls */
+}
 
-        label {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
+label {
+    font-weight: bold;
+    font-size: 1.2em; /* Slightly increase the label size */
+}
 
-        select, button {
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            width: 100%;
-        }
+select, button {
+    padding: 12px; /* Increased padding for buttons and selects */
+    border: none;
+    border-radius: 5px;
+    font-size: 18px; /* Increase font size for better readability */
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    width: 100%; /* Make controls full width */
+}
 
-        select:hover, button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
-        }
+select:hover, button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
 
-        #board {
-            display: grid;
-            border: 2px solid #ffffff;
-            margin: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            visibility: hidden;
-            transition: visibility 0s, opacity 0.5s linear;
-            opacity: 0;
-        }
+#board {
+    display: grid;
+    border: 2px solid #ffffff;
+    margin: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.5s linear;
+    opacity: 0;
+}
 
-        #board.visible {
-            visibility: visible;
-            opacity: 1;
-        }
+#board.visible {
+    visibility: visible;
+    opacity: 1;
+}
 
-        .cell {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #ffffff;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+.cell {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ffffff;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+}
 
-        .cell:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
+.cell:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 
-        .piece {
-            position: absolute;
-            width: 80%;
-            height: 80%;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+.piece {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
-        .black {
-            background: black;
-        }
+.black {
+    background: black;
+}
 
-        .white {
-            background: white;
-        }
+.white {
+    background: white;
+}
 
-        #status {
-            margin-top: 20px;
-            visibility: hidden;
-        }
+#status {
+    margin-top: 20px;
+    visibility: hidden;
+}
 
-        #reset {
-            display: none;
-            margin: 10px auto;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 16px;
-            transition: background 0.3s, transform 0.2s, opacity 0.3s;
-            opacity: 0.8;
-            width: 150px;
-        }
+#reset {
+    display: none; /* Initially hidden */
+    margin: 10px auto; /* Center the button horizontally */
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2); /* Subtle background color */
+    color: white;
+    font-size: 16px; /* Slightly smaller font size */
+    transition: background 0.3s, transform 0.2s, opacity 0.3s;
+    opacity: 0.8; /* Slightly transparent */
+    width: 150px; /* Fixed width */
+}
 
-        #reset:hover {
-            background: rgba(255, 255, 255, 0.3);
-            opacity: 1;
-        }
+#reset:hover {
+    background: rgba(255, 255, 255, 0.3); /* Brighter on hover */
+    opacity: 1; /* Fully opaque on hover */
+}
 
-        .info-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 1;
-            transition: transform 0.2s;
-        }
+          #info-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, #1e90ff, #00bfff);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        padding: 10px 15px;
+        border-radius: 10px;
+        transition: background-color 0.3s, transform 0.2s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+    
+    #info-button:hover {
+        background: linear-gradient(45deg, #00bfff, #1e90ff);
+        transform: scale(1.05);
+    }
 
-        .info-button:hover {
-            transform: scale(1.1);
-        }
+
     </style>
 </head>
 <body>
     <h1>Othello</h1>
+
+      <button class="info-button" onclick="window.location.href='info.html'"style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2rem; cursor: pointer; z-index: 1;">
+       ℹ
+   </button>
+    
     <div id="controls">
         <label for="mode">Game Mode:</label>
         <select id="mode">
@@ -166,12 +177,10 @@
         </select>
   
         <button id="start">Start Game</button>
-    </div>
+     </div>
     <div id="board" class="visible"></div>
     <button id="reset">Reset Game</button>
     <div id="status"></div>
-
-    <button class="info-button" onclick="window.location.href='info.html'">ℹ</button>
 
     <script>
         const boardElement = document.getElementById('board');
@@ -198,8 +207,8 @@
             renderBoard();
             gameEnded = false;
             boardElement.classList.add('visible');
-            statusElement.style.visibility = 'hidden'; 
-            resetButton.style.display = 'block'; 
+            statusElement.style.visibility = 'hidden'; // Hide status initially
+            resetButton.style.display = 'block'; // Show reset button
         }
 
         function renderBoard() {
@@ -277,13 +286,15 @@
             updateScores();
             if (checkGameOver()) {
                 gameEnded = true;
-                const winner = scores.black > scores.white ? 'Black' : scores.black < scores.white ? 'White' : 'Draw';
                 setTimeout(() => {
-                    alert(`Game Over! ${winner} wins!`);
+                    const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
+                    alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
+                    resetGame();
                 }, 100);
+                return;
             }
             currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-            updateStatus();
+            renderBoard();
         }
 
         function flipPieces(row, col) {
@@ -292,19 +303,21 @@
                 { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
                 { x: 1, y: -1 }, { x: 1, y: 1 }
             ];
+
             for (let { x, y } of directions) {
                 let r = row + y;
                 let c = col + x;
-                let toFlip = [];
+                const piecesToFlip = [];
+
                 while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
                     if (board[r][c] === null) break;
                     if (board[r][c] === currentPlayer) {
-                        for (let flipRow of toFlip) {
-                            board[flipRow.row][flipRow.col] = currentPlayer;
+                        for (let piece of piecesToFlip) {
+                            board[piece.r][piece.c] = currentPlayer;
                         }
                         break;
                     }
-                    toFlip.push({ row: r, col: c });
+                    piecesToFlip.push({ r, c });
                     r += y;
                     c += x;
                 }
@@ -324,65 +337,91 @@
         }
 
         function updateStatus() {
-            statusElement.innerText = `Black: ${scores.black} - White: ${scores.white}`;
-            statusElement.style.visibility = 'visible';
-        }
-
-        function checkGameOver() {
-            return board.flat().every(cell => cell !== null);
+            statusElement.textContent = `Black: ${scores.black}, White: ${scores.white}. ${currentPlayer}'s turn.`;
+            statusElement.style.visibility = 'visible'; // Show status after game starts
         }
 
         function easyAIMove() {
-            for (let row = 0; row < boardSize; row++) {
-                for (let col = 0; col < boardSize; col++) {
-                    if (validMove(row, col)) {
-                        placePiece(row, col);
-                        return;
-                    }
-                }
+            const validMoves = getValidMoves();
+            if (validMoves.length) {
+                const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+                placePiece(move.row, move.col);
             }
         }
 
         function hardAIMove() {
-            let bestMove = null;
-            let bestScore = -1;
-
-            for (let row = 0; row < boardSize; row++) {
-                for (let col = 0; col < boardSize; col++) {
-                    if (validMove(row, col)) {
-                        let tempBoard = JSON.parse(JSON.stringify(board));
-                        tempBoard[row][col] = currentPlayer;
-                        const score = calculateScore(tempBoard);
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestMove = { row, col };
-                        }
+            const validMoves = getValidMoves();
+            if (validMoves.length) {
+                let bestMove = validMoves[0];
+                let bestScore = -1;
+                for (let move of validMoves) {
+                    const tempBoard = board.map(row => row.slice());
+                    tempBoard[move.row][move.col] = 'white';
+                    const score = evaluateBoard(tempBoard);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = move;
                     }
                 }
-            }
-
-            if (bestMove) {
                 placePiece(bestMove.row, bestMove.col);
             }
         }
 
-        function calculateScore(tempBoard) {
+        function getValidMoves() {
+            const moves = [];
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    if (validMove(row, col)) {
+                        moves.push({ row, col });
+                    }
+                }
+            }
+            return moves;
+        }
+
+        function evaluateBoard(tempBoard) {
             let score = 0;
             for (let row of tempBoard) {
                 for (let cell of row) {
-                    if (cell === currentPlayer) score++;
+                    if (cell === 'white') score++;
+                    else if (cell === 'black') score--;
                 }
             }
             return score;
         }
 
-        startButton.addEventListener('click', () => {
+        function checkGameOver() {
+            const validMoves = getValidMoves();
+            if (validMoves.length === 0) {
+                currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+                return getValidMoves().length === 0;
+            }
+            return false;
+        }
+
+        function startGame() {
             boardSize = parseInt(sizeSelect.value);
             gameMode = modeSelect.value;
             initializeBoard();
-        });
+            document.getElementById('controls').style.display = 'none';  // Hide controls
+        }
 
-        resetButton.addEventListener('click', initializeBoard);
+        function resetGame() {
+            boardElement.classList.remove('visible');
+            document.getElementById('controls').style.display = 'block';  // Show controls
+            resetButton.style.display = 'none';  // Hide reset button
+            statusElement.style.visibility = 'hidden';  // Hide status
+            scores = { black: 2, white: 2 }; // Reset scores
+            currentPlayer = 'black'; // Reset current player
+            gameEnded = false; // Reset game ended state
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', startGame);
+        resetButton.addEventListener('click', resetGame);
+
+        // Initialize the game (hide the board initially)
+        resetGame();
     </script>
 </body>
 </html>
