@@ -101,6 +101,12 @@
         #reset:hover {
             background: #ff0000;
         }
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -122,13 +128,16 @@
         </select>
         <button id="start">Start Game</button>
     </div>
-    <div id="board" class="visible"></div>
+    <div id="board" class="visible">
+        <div id="winner" class="vertical-text" style="visibility: hidden;"></div>
+    </div>
     <button id="reset">Reset Game</button>
     <div id="status"></div>
 
     <script>
         const boardElement = document.getElementById('board');
         const statusElement = document.getElementById('status');
+        const winnerElement = document.getElementById('winner');
         const modeSelect = document.getElementById('mode');
         const sizeSelect = document.getElementById('size');
         const startButton = document.getElementById('start');
@@ -153,10 +162,12 @@
             boardElement.classList.add('visible');
             statusElement.style.visibility = 'hidden'; // Hide status initially
             resetButton.style.display = 'block'; // Show reset button
+            winnerElement.style.visibility = 'hidden'; // Hide winner initially
         }
 
         function renderBoard() {
-            boardElement.innerHTML = '';
+            boardElement.innerHTML = '<div id="winner" class="vertical-text" style="visibility: hidden;"></div>';
+            const winnerElement = document.getElementById('winner');
             boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 50px)`;
             boardElement.style.gridTemplateRows = `repeat(${boardSize}, 50px)`;
 
@@ -231,9 +242,8 @@
             if (checkGameOver()) {
                 gameEnded = true;
                 setTimeout(() => {
-                    const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
-                    alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
-                    resetGame();
+                    displayWinner();
+                    resetButton.style.display = 'block';  // Show reset button
                 }, 100);
                 return;
             }
@@ -343,6 +353,12 @@
             return false;
         }
 
+        function displayWinner() {
+            const winnerText = scores.black > scores.white ? 'Black Wins!' : scores.white > scores.black ? 'White Wins!' : 'It\'s a Tie!';
+            winnerElement.textContent = winnerText;
+            winnerElement.style.visibility = 'visible'; // Show winner on the board
+        }
+
         function startGame() {
             boardSize = parseInt(sizeSelect.value);
             gameMode = modeSelect.value;
@@ -355,6 +371,7 @@
             document.getElementById('controls').style.display = 'block';  // Show controls
             resetButton.style.display = 'none';  // Hide reset button
             statusElement.style.visibility = 'hidden';  // Hide status
+            winnerElement.style.visibility = 'hidden'; // Hide winner
             scores = { black: 2, white: 2 }; // Reset scores
             currentPlayer = 'black'; // Reset current player
             gameEnded = false; // Reset game ended state
