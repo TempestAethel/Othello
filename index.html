@@ -108,10 +108,13 @@
 
         function createBoard(size) {
             board = Array.from({ length: size }, () => Array(size).fill(null));
+            
+            // Set initial pieces for standard Othello start
             board[Math.floor(size / 2) - 1][Math.floor(size / 2) - 1] = 'white';
             board[Math.floor(size / 2)][Math.floor(size / 2)] = 'white';
             board[Math.floor(size / 2) - 1][Math.floor(size / 2)] = 'black';
             board[Math.floor(size / 2)][Math.floor(size / 2) - 1] = 'black';
+
             renderBoard();
         }
 
