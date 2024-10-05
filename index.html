@@ -1,11 +1,10 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello Game</title>
     <style>
-        body {
+       body {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -18,41 +17,191 @@
             color: white;
             font-family: Arial, sans-serif;
             position: relative;
-            animation: backgroundAnimation 15s ease-in-out infinite, backgroundMovement 30s linear infinite;
-            background-size: 200% 200%;
+            animation: backgroundAnimation 15s ease-in-out infinite, backgroundMovement 30s linear infinite; /* Added movement */
+            background-size: 200% 200%; /* Added background size for movement effect */
         }
 
         @keyframes backgroundAnimation {
-            0% { background: linear-gradient(to top left, #1E8278, #309390, #5F4764), linear-gradient(to bottom right, #000000, #222222, #1E8278); }
-            25% { background: linear-gradient(to top left, #3F9B8B, #4DAE97, #7F7C92), linear-gradient(to bottom right, #111111, #333333, #3F9B8B); }
-            50% { background: linear-gradient(to top left, #5FBAA7, #6CC3B3, #B89FA7), linear-gradient(to bottom right, #222222, #444444, #5FBAA7); }
-            75% { background: linear-gradient(to top left, #4E7F81, #5A9B98, #A76B76), linear-gradient(to bottom right, #111111, #222222, #4E7F81); }
-            100% { background: linear-gradient(to top left, #1E8278, #309390, #5F4764), linear-gradient(to bottom right, #000000, #222222, #1E8278); }
+            0% {
+                background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
+                            linear-gradient(to bottom right, #000000, #222222, #1E8278);
+            }
+            25% {
+                background: linear-gradient(to top left, #3F9B8B, #4DAE97, #7F7C92),
+                            linear-gradient(to bottom right, #111111, #333333, #3F9B8B);
+            }
+            50% {
+                background: linear-gradient(to top left, #5FBAA7, #6CC3B3, #B89FA7),
+                            linear-gradient(to bottom right, #222222, #444444, #5FBAA7);
+            }
+            75% {
+                background: linear-gradient(to top left, #4E7F81, #5A9B98, #A76B76),
+                            linear-gradient(to bottom right, #111111, #222222, #4E7F81);
+            }
+            100% {
+                background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
+                            linear-gradient(to bottom right, #000000, #222222, #1E8278);
+            }
         }
 
         @keyframes backgroundMovement {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
         }
 
-        h1 { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); margin: 0; font-size: 4em; text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8); letter-spacing: 3px; }
-        #controls { margin-bottom: 20px; text-align: center; display: flex; flex-direction: column; gap: 20px; padding: 20px; background: rgba(0, 0, 0, 0.8); border-radius: 10px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); width: 300px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        label { font-weight: bold; font-size: 1.2em; }
-        select, button { padding: 12px; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; transition: background 0.3s, transform 0.2s; width: 100%; }
-        select:hover, button:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.05); }
-        #board { display: grid; border: 2px solid #ffffff; margin: 20px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); visibility: hidden; transition: visibility 0s, opacity 0.5s linear; opacity: 0; }
-        #board.visible { visibility: visible; opacity: 1; }
-        .cell { width: 50px; height: 50px; border: 1px solid #ffffff; position: relative; cursor: pointer; transition: background 0.3s; }
-        .cell:hover { background: rgba(255, 255, 255, 0.1); }
-        .piece { position: absolute; width: 80%; height: 80%; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .black { background: black; }
-        .white { background: white; }
-        #status { margin-top: 20px; visibility: hidden; }
-        #reset { display: none; margin: 10px auto; padding: 10px; border-radius: 5px; border: none; background: rgba(255, 255, 255, 0.2); color: white; font-size: 16px; transition: background 0.3s, transform 0.2s, opacity 0.3s; opacity: 0.8; width: 150px; }
-        #reset:hover { background: rgba(255, 255, 255, 0.3); opacity: 1; }
-        #infoButton { position: absolute; top: 20px; right: 20px; padding: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.2); color: white; font-size: 16px; cursor: pointer; transition: background 0.3s, transform 0.2s; width: auto; }
-        #infoButton:hover { background: rgba(255, 255, 255, 0.3); }
-        #rules { display: none; position: absolute; top: 60px; right: 20px; background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 5px; color: white; width: 200px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+h1 {
+    position: absolute; /* Changed to absolute */
+    top: 20px; /* Position from the top */
+    left: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
+    margin: 0;
+    font-size: 4em; /* Increased size for more prominence */
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8); /* More pronounced shadow */
+    letter-spacing: 3px; /* More spacing between letters */
+}
+
+
+        #controls {
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            position: absolute; /* Adjusted position to center */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centering controls */
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        select, button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%;
+        }
+
+        select:hover, button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        #board {
+            display: grid;
+            border: 2px solid #ffffff;
+            margin: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            visibility: hidden;
+            transition: visibility 0s, opacity 0.5s linear;
+            opacity: 0;
+        }
+
+        #board.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ffffff;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .piece {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .black {
+            background: black;
+        }
+
+        .white {
+            background: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            visibility: hidden;
+        }
+
+        #reset {
+            display: none;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s, opacity 0.3s;
+            opacity: 0.8;
+            width: 150px;
+        }
+
+        #reset:hover {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+        }
+
+        #infoButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            width: auto; /* Changed to auto for proper sizing */
+        }
+
+        #infoButton:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        #rules {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            color: white;
+            width: 200px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -64,6 +213,7 @@
             <option value="easyAI">Easy AI</option>
             <option value="hardAI">Hard AI</option>
         </select>
+   
         <label for="size">Board Size:</label>
         <select id="size">
             <option value="4">4x4</option>
@@ -76,11 +226,13 @@
             <option value="11">11x11</option>
             <option value="12">12x12</option>
         </select>
+  
         <button id="start">Start Game</button>
-    </div>
+     </div>
     <div id="board" class="visible"></div>
     <button id="reset">Reset Game</button>
     <div id="status"></div>
+    
     <button id="infoButton">Info</button>
     <div id="rules">
         <h3>Othello Rules</h3>
@@ -101,241 +253,244 @@
         const infoButton = document.getElementById('infoButton');
         const rulesElement = document.getElementById('rules');
 
+        let boardSize = 8;
         let board = [];
         let currentPlayer = 'black';
-        let boardSize = 8;
         let gameMode = '2player';
+        let scores = { black: 2, white: 2 };
+        let gameEnded = false;
 
-        function createBoard(size) {
-            board = Array.from({ length: size }, () => Array(size).fill(null));
-            
-            // Set initial pieces for standard Othello start
-            board[Math.floor(size / 2) - 1][Math.floor(size / 2) - 1] = 'white';
-            board[Math.floor(size / 2)][Math.floor(size / 2)] = 'white';
-            board[Math.floor(size / 2) - 1][Math.floor(size / 2)] = 'black';
-            board[Math.floor(size / 2)][Math.floor(size / 2) - 1] = 'black';
-
+        function initializeBoard() {
+            board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
+            const mid = Math.floor(boardSize / 2);
+            board[mid - 1][mid - 1] = 'white';
+            board[mid][mid] = 'white';
+            board[mid - 1][mid] = 'black';
+            board[mid][mid - 1] = 'black';
             renderBoard();
+            gameEnded = false;
+            boardElement.classList.add('visible');
+            statusElement.style.visibility = 'hidden'; 
+            resetButton.style.display = 'block'; 
         }
 
         function renderBoard() {
             boardElement.innerHTML = '';
-            board.forEach((row, rowIndex) => {
-                row.forEach((cell, colIndex) => {
-                    const cellElement = document.createElement('div');
-                    cellElement.className = 'cell';
-                    cellElement.addEventListener('click', () => handleCellClick(rowIndex, colIndex));
-                    if (cell) {
-                        const pieceElement = document.createElement('div');
-                        pieceElement.className = `piece ${cell}`;
-                        cellElement.appendChild(pieceElement);
+            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 50px)`;
+            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 50px)`;
+
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+
+                    if (board[row][col]) {
+                        const piece = document.createElement('div');
+                        piece.className = `piece ${board[row][col]}`;
+                        cell.appendChild(piece);
                     }
-                    boardElement.appendChild(cellElement);
-                });
-            });
-            boardElement.classList.add('visible');
-            statusElement.innerText = `${currentPlayer}'s Turn`;
-            statusElement.style.visibility = 'visible';
+
+                    cell.addEventListener('click', () => handleCellClick(row, col));
+                    boardElement.appendChild(cell);
+                }
+            }
+            updateStatus();
         }
 
         function handleCellClick(row, col) {
-            if (!board[row][col] && isValidMove(row, col, currentPlayer)) {
-                board[row][col] = currentPlayer;
-                flipPieces(row, col);
-                currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-                renderBoard();
-                checkGameOver();
-                
-                if (gameMode !== '2player' && currentPlayer === 'white') {
-                    setTimeout(aiMove, 500);
+            if (!gameEnded && validMove(row, col)) {
+                placePiece(row, col);
+                if (gameMode.includes('AI') && currentPlayer === 'white') {
+                    setTimeout(() => {
+                        if (gameMode === 'easyAI') easyAIMove();
+                        else hardAIMove();
+                    }, 500);
                 }
             }
         }
 
-        function isValidMove(row, col, color) {
+        function validMove(row, col) {
+            if (board[row][col] !== null) return false;
+
             const directions = [
-                { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 },
-                { x: 1, y: -1 }, { x: 0, y: -1 }, { x: -1, y: -1 },
-                { x: -1, y: 0 }, { x: -1, y: 1 }
+                { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
+                { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
+                { x: 1, y: -1 }, { x: 1, y: 1 }
             ];
+            for (let { x, y } of directions) {
+                let r = row + y;
+                let c = col + x;
+                let foundOpponent = false;
 
-            for (const { x, y } of directions) {
-                let i = row + x, j = col + y, hasOpponentPiece = false;
-
-                while (i >= 0 && j >= 0 && i < board.length && j < board.length) {
-                    if (board[i][j] === null) break;
-                    if (board[i][j] === color) {
-                        if (hasOpponentPiece) return true;
+                while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
+                    if (board[r][c] === null) break;
+                    if (board[r][c] === currentPlayer) {
+                        if (foundOpponent) return true;
                         break;
                     }
-                    hasOpponentPiece = true;
-                    i += x;
-                    j += y;
+                    foundOpponent = true;
+                    r += y;
+                    c += x;
                 }
             }
             return false;
         }
 
+        function placePiece(row, col) {
+            board[row][col] = currentPlayer;
+            flipPieces(row, col);
+            updateScores();
+            if (checkGameOver()) {
+                gameEnded = true;
+                setTimeout(() => {
+                    const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
+                    alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
+                    resetGame();
+                }, 100);
+                return;
+            }
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            renderBoard();
+        }
+
         function flipPieces(row, col) {
             const directions = [
-                { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 },
-                { x: 1, y: -1 }, { x: 0, y: -1 }, { x: -1, y: -1 },
-                { x: -1, y: 0 }, { x: -1, y: 1 }
+                { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
+                { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
+                { x: 1, y: -1 }, { x: 1, y: 1 }
             ];
 
-            for (const { x, y } of directions) {
-                let i = row + x, j = col + y, piecesToFlip = [];
+            for (let { x, y } of directions) {
+                let r = row + y;
+                let c = col + x;
+                const piecesToFlip = [];
 
-                while (i >= 0 && j >= 0 && i < board.length && j < board.length) {
-                    if (board[i][j] === null) break;
-                    if (board[i][j] === currentPlayer) {
-                        for (const [flipRow, flipCol] of piecesToFlip) {
-                            board[flipRow][flipCol] = currentPlayer;
+                while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
+                    if (board[r][c] === null) break;
+                    if (board[r][c] === currentPlayer) {
+                        for (let piece of piecesToFlip) {
+                            board[piece.r][piece.c] = currentPlayer;
                         }
                         break;
                     }
-                    piecesToFlip.push([i, j]);
-                    i += x;
-                    j += y;
+                    piecesToFlip.push({ r, c });
+                    r += y;
+                    c += x;
                 }
             }
+        }
+
+        function updateScores() {
+            scores.black = 0;
+            scores.white = 0;
+            for (let row of board) {
+                for (let cell of row) {
+                    if (cell === 'black') scores.black++;
+                    if (cell === 'white') scores.white++;
+                }
+            }
+            updateStatus();
+        }
+
+        function updateStatus() {
+            statusElement.innerHTML = `<strong>Black:</strong> ${scores.black} <strong>White:</strong> ${scores.white} <br> <strong>${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s turn.</strong>`;
+            statusElement.style.visibility = 'visible';
+        }
+
+        function easyAIMove() {
+            const validMoves = getValidMoves();
+            if (validMoves.length) {
+                const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+                placePiece(move.row, move.col);
+            }
+        }
+
+        function hardAIMove() {
+            const validMoves = getValidMoves();
+            if (validMoves.length) {
+                let bestMove = validMoves[0];
+                let bestScore = -1;
+                for (let move of validMoves) {
+                    const tempBoard = board.map(row => row.slice());
+                    tempBoard[move.row][move.col] = 'white';
+                    const score = evaluateBoard(tempBoard);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = move;
+                    }
+                }
+                placePiece(bestMove.row, bestMove.col);
+            }
+        }
+
+        function getValidMoves() {
+            const moves = [];
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    if (validMove(row, col)) {
+                        moves.push({ row, col });
+                    }
+                }
+            }
+            return moves;
+        }
+
+        function evaluateBoard(tempBoard) {
+            let score = 0;
+            for (let row of tempBoard) {
+                for (let cell of row) {
+                    if (cell === 'white') score++;
+                    else if (cell === 'black') score--;
+                }
+            }
+            return score;
         }
 
         function checkGameOver() {
-            const movesAvailable = board.flat().some((cell, index) => {
-                const row = Math.floor(index / board.length);
-                const col = index % board.length;
-                return cell === null && isValidMove(row, col, currentPlayer);
-            });
-
-            if (!movesAvailable) {
+            const validMoves = getValidMoves();
+            if (validMoves.length === 0) {
                 currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-                const opponentMovesAvailable = board.flat().some((cell, index) => {
-                    const row = Math.floor(index / board.length);
-                    const col = index % board.length;
-                    return cell === null && isValidMove(row, col, currentPlayer);
-                });
-
-                if (!opponentMovesAvailable) {
-                    declareWinner();
-                } else {
-                    statusElement.innerText = `${currentPlayer}'s Turn`;
-                }
+                return getValidMoves().length === 0;
             }
+            return false;
         }
 
-        function declareWinner() {
-            const blackCount = board.flat().filter(cell => cell === 'black').length;
-            const whiteCount = board.flat().filter(cell => cell === 'white').length;
+        function startGame() {
+    boardSize = parseInt(sizeSelect.value);
+    gameMode = modeSelect.value;
+    initializeBoard();
+    updateStatus();  // Add this line to update the status immediately
+    document.getElementById('controls').style.display = 'none';  
+}
 
-            if (blackCount > whiteCount) {
-                statusElement.innerText = 'Black wins!';
-            } else if (whiteCount > blackCount) {
-                statusElement.innerText = 'White wins!';
+
+        function resetGame() {
+            boardElement.classList.remove('visible');
+            document.getElementById('controls').style.display = 'block';  
+            resetButton.style.display = 'none';  
+            statusElement.style.visibility = 'hidden';  
+            scores = { black: 2, white: 2 }; 
+            currentPlayer = 'black'; 
+            gameEnded = false; 
+        }
+
+        function toggleRules() {
+            if (rulesElement.style.display === 'none' || rulesElement.style.display === '') {
+                rulesElement.style.display = 'block';
             } else {
-                statusElement.innerText = 'It\'s a tie!';
-            }
-            resetButton.style.display = 'block';
-        }
-
-        function aiMove() {
-            let bestMove;
-            if (gameMode === 'easyAI') {
-                bestMove = getRandomMove();
-            } else if (gameMode === 'hardAI') {
-                bestMove = minimaxMove();
-            }
-            if (bestMove) {
-                handleCellClick(bestMove.row, bestMove.col);
+                rulesElement.style.display = 'none';
             }
         }
 
-        function getRandomMove() {
-            const validMoves = [];
-            board.forEach((row, rowIndex) => {
-                row.forEach((cell, colIndex) => {
-                    if (cell === null && isValidMove(rowIndex, colIndex, 'white')) {
-                        validMoves.push({ row: rowIndex, col: colIndex });
-                    }
-                });
-            });
-            return validMoves[Math.floor(Math.random() * validMoves.length)];
-        }
+        // Event listeners
+        startButton.addEventListener('click', startGame);
+        resetButton.addEventListener('click', resetGame);
+        infoButton.addEventListener('click', toggleRules);
 
-        function minimaxMove() {
-            let bestValue = -Infinity;
-            let bestMove = null;
-
-            board.forEach((row, rowIndex) => {
-                row.forEach((cell, colIndex) => {
-                    if (cell === null && isValidMove(rowIndex, colIndex, 'white')) {
-                        board[rowIndex][colIndex] = 'white';
-                        let moveValue = minimax(0, false);
-                        board[rowIndex][colIndex] = null; // Undo move
-
-                        if (moveValue > bestValue) {
-                            bestValue = moveValue;
-                            bestMove = { row: rowIndex, col: colIndex };
-                        }
-                    }
-                });
-            });
-            return bestMove;
-        }
-
-        function minimax(depth, isMaximizing) {
-            if (depth > 3) return evaluateBoard();
-
-            if (isMaximizing) {
-                let maxEval = -Infinity;
-                board.forEach((row, rowIndex) => {
-                    row.forEach((cell, colIndex) => {
-                        if (cell === null && isValidMove(rowIndex, colIndex, 'white')) {
-                            board[rowIndex][colIndex] = 'white';
-                            let eval = minimax(depth + 1, false);
-                            board[rowIndex][colIndex] = null; // Undo move
-                            maxEval = Math.max(maxEval, eval);
-                        }
-                    });
-                });
-                return maxEval;
-            } else {
-                let minEval = Infinity;
-                board.forEach((row, rowIndex) => {
-                    row.forEach((cell, colIndex) => {
-                        if (cell === null && isValidMove(rowIndex, colIndex, 'black')) {
-                            board[rowIndex][colIndex] = 'black';
-                            let eval = minimax(depth + 1, true);
-                            board[rowIndex][colIndex] = null; // Undo move
-                            minEval = Math.min(minEval, eval);
-                        }
-                    });
-                });
-                return minEval;
-            }
-        }
-
-        function evaluateBoard() {
-            const blackCount = board.flat().filter(cell => cell === 'black').length;
-            const whiteCount = board.flat().filter(cell => cell === 'white').length;
-            return whiteCount - blackCount; // More white pieces is better
-        }
-
-        startButton.addEventListener('click', () => {
-            boardSize = parseInt(sizeSelect.value);
-            gameMode = modeSelect.value;
-            createBoard(boardSize);
-            resetButton.style.display = 'none';
-        });
-
-        resetButton.addEventListener('click', () => {
-            createBoard(boardSize);
-            resetButton.style.display = 'none';
-        });
-
-        infoButton.addEventListener('click', () => {
-            rulesElement.style.display = rulesElement.style.display === 'block' ? 'none' : 'block';
-        });
+        // Initialize the game (hide the board initially)
+        resetGame();
     </script>
 </body>
 </html>
