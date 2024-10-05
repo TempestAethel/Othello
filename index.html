@@ -4,54 +4,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello Game</title>
     <style>
-       body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
-                        linear-gradient(to bottom right, #000000, #222222, #1E8278);
-            opacity: 0.8;
-            color: white;
-            font-family: Arial, sans-serif;
-            position: relative;
-            animation: backgroundAnimation 15s ease-in-out infinite, backgroundMovement 30s linear infinite; /* Added movement */
-            background-size: 200% 200%; /* Added background size for movement effect */
-        }
-
-        @keyframes backgroundAnimation {
-            0% {
-                background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
-                            linear-gradient(to bottom right, #000000, #222222, #1E8278);
-            }
-            25% {
-                background: linear-gradient(to top left, #3F9B8B, #4DAE97, #7F7C92),
-                            linear-gradient(to bottom right, #111111, #333333, #3F9B8B);
-            }
-            50% {
-                background: linear-gradient(to top left, #5FBAA7, #6CC3B3, #B89FA7),
-                            linear-gradient(to bottom right, #222222, #444444, #5FBAA7);
-            }
-            75% {
-                background: linear-gradient(to top left, #4E7F81, #5A9B98, #A76B76),
-                            linear-gradient(to bottom right, #111111, #222222, #4E7F81);
-            }
-            100% {
-                background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
-                            linear-gradient(to bottom right, #000000, #222222, #1E8278);
-            }
-        }
-
-        @keyframes backgroundMovement {
-            0% {
-                background-position: 0% 0%;
-            }
-            100% {
-                background-position: 100% 100%;
-            }
-        }
+        body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
+         linear-gradient(to bottom right, #000000, #222222, #1E8278);
+    opacity: 0.8;
+    color: white;
+    font-family: Arial, sans-serif;
+    position: relative;
+}
 
 h1 {
     position: absolute; /* Changed to absolute */
@@ -458,13 +424,11 @@ h1 {
         }
 
         function startGame() {
-    boardSize = parseInt(sizeSelect.value);
-    gameMode = modeSelect.value;
-    initializeBoard();
-    updateStatus();  // Add this line to update the status immediately
-    document.getElementById('controls').style.display = 'none';  
-}
-
+            boardSize = parseInt(sizeSelect.value);
+            gameMode = modeSelect.value;
+            initializeBoard();
+            document.getElementById('controls').style.display = 'none';  
+        }
 
         function resetGame() {
             boardElement.classList.remove('visible');
