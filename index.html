@@ -424,11 +424,12 @@ h1 {
         }
 
         function startGame() {
-            boardSize = parseInt(sizeSelect.value);
-            gameMode = modeSelect.value;
-            initializeBoard();
-            document.getElementById('controls').style.display = 'none';  
-        }
+    boardSize = parseInt(sizeSelect.value);
+    gameMode = modeSelect.value;
+    initializeBoard();
+    updateStatus();  
+    document.getElementById('controls').style.display = 'none';  
+}
 
         function resetGame() {
             boardElement.classList.remove('visible');
