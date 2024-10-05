@@ -1,36 +1,42 @@
 <html lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello Game</title>
     <style>
+        /* Style for the body, including background and text formatting */
         body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
-         linear-gradient(to bottom right, #000000, #222222, #1E8278);
-    opacity: 0.8;
-    color: white;
-    font-family: Arial, sans-serif;
-    position: relative;
-}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to top left, #1E8278, #309390, #5F4764),
+                        linear-gradient(to bottom right, #000000, #222222, #1E8278);
+            background-attachment: fixed; 
+            background-repeat: no-repeat; 
+            background-size: cover; 
+            color: white;
+            font-family: Arial, sans-serif;
+            position: relative;
+            opacity: 0.8;
+        }
 
-h1 {
-    position: absolute; /* Changed to absolute */
-    top: 20px; /* Position from the top */
-    left: 50%;
-    transform: translateX(-50%); /* Center it horizontally */
-    margin: 0;
-    font-size: 4em; /* Increased size for more prominence */
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8); /* More pronounced shadow */
-    letter-spacing: 3px; /* More spacing between letters */
-}
+        /* Style for the main title */
+        h1 {
+            position: absolute; 
+            top: 20px; 
+            left: 50%;
+            transform: translateX(-50%); 
+            margin: 0;
+            font-size: 4em; 
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8); 
+            letter-spacing: 3px; 
+        }
 
-
+        /* Container for game controls */
         #controls {
             margin-bottom: 20px;
             text-align: center;
@@ -42,17 +48,19 @@ h1 {
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             width: 300px;
-            position: absolute; /* Adjusted position to center */
+            position: absolute; 
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* Centering controls */
+            transform: translate(-50%, -50%); 
         }
 
+        /* Style for labels */
         label {
             font-weight: bold;
             font-size: 1.2em;
         }
 
+        /* Styles for select dropdowns and buttons */
         select, button {
             padding: 12px;
             border: none;
@@ -63,11 +71,13 @@ h1 {
             width: 100%;
         }
 
+        /* Hover effect for select and buttons */
         select:hover, button:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: scale(1.05);
         }
 
+        /* Style for the game board */
         #board {
             display: grid;
             border: 2px solid #ffffff;
@@ -78,11 +88,13 @@ h1 {
             opacity: 0;
         }
 
+        /* Class to make the board visible */
         #board.visible {
             visibility: visible;
             opacity: 1;
         }
 
+        /* Style for each cell on the board */
         .cell {
             width: 50px;
             height: 50px;
@@ -92,10 +104,12 @@ h1 {
             transition: background 0.3s;
         }
 
+        /* Hover effect for cells */
         .cell:hover {
             background: rgba(255, 255, 255, 0.1);
         }
 
+        /* Style for the pieces on the board */
         .piece {
             position: absolute;
             width: 80%;
@@ -106,6 +120,7 @@ h1 {
             transform: translate(-50%, -50%);
         }
 
+        /* Specific styles for black and white pieces */
         .black {
             background: black;
         }
@@ -114,11 +129,13 @@ h1 {
             background: white;
         }
 
+        /* Status display styling */
         #status {
             margin-top: 20px;
             visibility: hidden;
         }
 
+        /* Reset button styling */
         #reset {
             display: none;
             margin: 10px auto;
@@ -133,11 +150,13 @@ h1 {
             width: 150px;
         }
 
+        /* Hover effect for reset button */
         #reset:hover {
             background: rgba(255, 255, 255, 0.3);
             opacity: 1;
         }
 
+        /* Info button styling */
         #infoButton {
             position: absolute;
             top: 20px;
@@ -149,13 +168,15 @@ h1 {
             font-size: 16px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
-            width: auto; /* Changed to auto for proper sizing */
+            width: auto; 
         }
 
+        /* Hover effect for info button */
         #infoButton:hover {
             background: rgba(255, 255, 255, 0.3);
         }
 
+        /* Rules display styling */
         #rules {
             display: none;
             position: absolute;
@@ -194,12 +215,13 @@ h1 {
         </select>
   
         <button id="start">Start Game</button>
-     </div>
-    <div id="board" class="visible"></div>
-    <button id="reset">Reset Game</button>
-    <div id="status"></div>
+    </div>
     
-    <button id="infoButton">Info</button>
+    <div id="board" class="visible"></div> <!-- The game board will be displayed here -->
+    <button id="reset">Reset Game</button> <!-- Button to reset the game -->
+    <div id="status"></div> <!-- Displays current game status and scores -->
+    
+    <button id="infoButton">Info</button> <!-- Button to show game rules -->
     <div id="rules">
         <h3>Othello Rules</h3>
         <p>1. Players take turns placing pieces on the board.</p>
@@ -210,65 +232,70 @@ h1 {
     </div>
 
     <script>
-        const boardElement = document.getElementById('board');
-        const statusElement = document.getElementById('status');
-        const modeSelect = document.getElementById('mode');
-        const sizeSelect = document.getElementById('size');
-        const startButton = document.getElementById('start');
-        const resetButton = document.getElementById('reset');
-        const infoButton = document.getElementById('infoButton');
-        const rulesElement = document.getElementById('rules');
+        const boardElement = document.getElementById('board'); // Reference to the board element
+        const statusElement = document.getElementById('status'); // Reference to the status display
+        const modeSelect = document.getElementById('mode'); // Reference to the game mode selection
+        const sizeSelect = document.getElementById('size'); // Reference to the board size selection
+        const startButton = document.getElementById('start'); // Reference to the start button
+        const resetButton = document.getElementById('reset'); // Reference to the reset button
+        const infoButton = document.getElementById('infoButton'); // Reference to the info button
+        const rulesElement = document.getElementById('rules'); // Reference to the rules section
 
-        let boardSize = 8;
-        let board = [];
-        let currentPlayer = 'black';
-        let gameMode = '2player';
-        let scores = { black: 2, white: 2 };
-        let gameEnded = false;
+        let boardSize = 8; // Default board size
+        let board = []; // 2D array to represent the board
+        let currentPlayer = 'black'; // Track the current player
+        let gameMode = '2player'; // Track the game mode
+        let scores = { black: 2, white: 2 }; // Track the scores of both players
+        let gameEnded = false; // Flag to check if the game has ended
 
         function initializeBoard() {
+            // Initialize the board with null values
             board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
             const mid = Math.floor(boardSize / 2);
+            // Set up the initial four pieces in the center
             board[mid - 1][mid - 1] = 'white';
             board[mid][mid] = 'white';
             board[mid - 1][mid] = 'black';
             board[mid][mid - 1] = 'black';
-            renderBoard();
-            gameEnded = false;
-            boardElement.classList.add('visible');
-            statusElement.style.visibility = 'hidden'; 
-            resetButton.style.display = 'block'; 
+            renderBoard(); // Render the board
+            gameEnded = false; // Reset game end flag
+            boardElement.classList.add('visible'); // Make the board visible
+            statusElement.style.visibility = 'hidden'; // Hide the status initially
+            resetButton.style.display = 'block'; // Show the reset button
         }
 
         function renderBoard() {
+            // Clear the board element and set its grid styles
             boardElement.innerHTML = '';
             boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 50px)`;
             boardElement.style.gridTemplateRows = `repeat(${boardSize}, 50px)`;
 
             for (let row = 0; row < boardSize; row++) {
                 for (let col = 0; col < boardSize; col++) {
-                    const cell = document.createElement('div');
+                    const cell = document.createElement('div'); // Create a cell element
                     cell.className = 'cell';
-                    cell.dataset.row = row;
-                    cell.dataset.col = col;
+                    cell.dataset.row = row; // Store row index
+                    cell.dataset.col = col; // Store column index
 
                     if (board[row][col]) {
-                        const piece = document.createElement('div');
-                        piece.className = `piece ${board[row][col]}`;
-                        cell.appendChild(piece);
+                        const piece = document.createElement('div'); // Create a piece element
+                        piece.className = `piece ${board[row][col]}`; // Set the piece color class
+                        cell.appendChild(piece); // Add piece to the cell
                     }
 
-                    cell.addEventListener('click', () => handleCellClick(row, col));
-                    boardElement.appendChild(cell);
+                    cell.addEventListener('click', () => handleCellClick(row, col)); // Add click listener for cell
+                    boardElement.appendChild(cell); // Add cell to the board
                 }
             }
-            updateStatus();
+            updateStatus(); // Update the status display
         }
 
         function handleCellClick(row, col) {
+            // Handle click event on a cell
             if (!gameEnded && validMove(row, col)) {
-                placePiece(row, col);
+                placePiece(row, col); // Place piece if the move is valid
                 if (gameMode.includes('AI') && currentPlayer === 'white') {
+                    // If it's AI's turn, make the move after a short delay
                     setTimeout(() => {
                         if (gameMode === 'easyAI') easyAIMove();
                         else hardAIMove();
@@ -278,50 +305,56 @@ h1 {
         }
 
         function validMove(row, col) {
-            if (board[row][col] !== null) return false;
+            // Check if the move is valid
+            if (board[row][col] !== null) return false; // Cell must be empty
 
             const directions = [
                 { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
                 { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
                 { x: 1, y: -1 }, { x: 1, y: 1 }
             ];
+
+            // Check each direction for a valid move
             for (let { x, y } of directions) {
-                let r = row + y;
-                let c = col + x;
-                let foundOpponent = false;
+                let r = row + y; // Row increment
+                let c = col + x; // Column increment
+                let foundOpponent = false; // Flag to check if an opponent's piece is found
 
                 while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
-                    if (board[r][c] === null) break;
+                    if (board[r][c] === null) break; // No piece found in this direction
                     if (board[r][c] === currentPlayer) {
-                        if (foundOpponent) return true;
-                        break;
+                        if (foundOpponent) return true; // Valid move found
+                        break; // End of line with no outflanked pieces
                     }
-                    foundOpponent = true;
-                    r += y;
-                    c += x;
+                    foundOpponent = true; // Mark opponent's piece found
+                    r += y; // Move in the y direction
+                    c += x; // Move in the x direction
                 }
             }
-            return false;
+            return false; // No valid move found
         }
 
         function placePiece(row, col) {
-            board[row][col] = currentPlayer;
-            flipPieces(row, col);
-            updateScores();
+            // Place the piece on the board
+            board[row][col] = currentPlayer; // Set the current player's piece
+            flipPieces(row, col); // Flip opponent's pieces
+            updateScores(); // Update the scores
             if (checkGameOver()) {
+                // Check if the game has ended after the move
                 gameEnded = true;
                 setTimeout(() => {
                     const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
                     alert(`Game Over! Winner: ${winner}. Final Score - Black: ${scores.black}, White: ${scores.white}`);
-                    resetGame();
+                    resetGame(); // Reset the game after showing the winner
                 }, 100);
                 return;
             }
-            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-            renderBoard();
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black'; // Switch player
+            renderBoard(); // Re-render the board
         }
 
         function flipPieces(row, col) {
+            // Flip opponent's pieces according to the rules
             const directions = [
                 { x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 },
                 { x: 1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: 1 },
@@ -329,133 +362,144 @@ h1 {
             ];
 
             for (let { x, y } of directions) {
-                let r = row + y;
-                let c = col + x;
-                const piecesToFlip = [];
+                let r = row + y; // Row increment
+                let c = col + x; // Column increment
+                const piecesToFlip = []; // Store pieces to be flipped
 
                 while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
-                    if (board[r][c] === null) break;
+                    if (board[r][c] === null) break; // No piece found in this direction
                     if (board[r][c] === currentPlayer) {
+                        // Flip the stored pieces if a player's piece is found
                         for (let piece of piecesToFlip) {
                             board[piece.r][piece.c] = currentPlayer;
                         }
-                        break;
+                        break; // End of line with no outflanked pieces
                     }
-                    piecesToFlip.push({ r, c });
-                    r += y;
-                    c += x;
+                    piecesToFlip.push({ r, c }); // Store opponent's piece for flipping
+                    r += y; // Move in the y direction
+                    c += x; // Move in the x direction
                 }
             }
         }
 
         function updateScores() {
+            // Reset scores and count pieces on the board
             scores.black = 0;
             scores.white = 0;
             for (let row of board) {
                 for (let cell of row) {
-                    if (cell === 'black') scores.black++;
-                    if (cell === 'white') scores.white++;
+                    if (cell === 'black') scores.black++; // Count black pieces
+                    if (cell === 'white') scores.white++; // Count white pieces
                 }
             }
-            updateStatus();
+            updateStatus(); // Update the status display
         }
 
         function updateStatus() {
+            // Update the status element with current scores and turn
             statusElement.innerHTML = `<strong>Black:</strong> ${scores.black} <strong>White:</strong> ${scores.white} <br> <strong>${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s turn.</strong>`;
-            statusElement.style.visibility = 'visible';
+            statusElement.style.visibility = 'visible'; // Show the status
         }
 
         function easyAIMove() {
+            // Easy AI makes a random valid move
             const validMoves = getValidMoves();
             if (validMoves.length) {
-                const move = validMoves[Math.floor(Math.random() * validMoves.length)];
-                placePiece(move.row, move.col);
+                const move = validMoves[Math.floor(Math.random() * validMoves.length)]; // Select random move
+                placePiece(move.row, move.col); // Place piece
             }
         }
 
         function hardAIMove() {
+            // Hard AI selects the best valid move based on evaluation
             const validMoves = getValidMoves();
             if (validMoves.length) {
                 let bestMove = validMoves[0];
                 let bestScore = -1;
                 for (let move of validMoves) {
-                    const tempBoard = board.map(row => row.slice());
-                    tempBoard[move.row][move.col] = 'white';
-                    const score = evaluateBoard(tempBoard);
+                    const tempBoard = board.map(row => row.slice()); // Create a copy of the board
+                    tempBoard[move.row][move.col] = 'white'; // Simulate the move
+                    const score = evaluateBoard(tempBoard); // Evaluate the board
                     if (score > bestScore) {
-                        bestScore = score;
-                        bestMove = move;
+                        bestScore = score; // Update best score
+                        bestMove = move; // Update best move
                     }
                 }
-                placePiece(bestMove.row, bestMove.col);
+                placePiece(bestMove.row, bestMove.col); // Place the best move
             }
         }
 
         function getValidMoves() {
+            // Get a list of all valid moves for the current player
             const moves = [];
             for (let row = 0; row < boardSize; row++) {
                 for (let col = 0; col < boardSize; col++) {
                     if (validMove(row, col)) {
-                        moves.push({ row, col });
+                        moves.push({ row, col }); // Add valid move to the list
                     }
                 }
             }
-            return moves;
+            return moves; // Return the list of valid moves
         }
 
         function evaluateBoard(tempBoard) {
+            // Evaluate the board to provide a score for the AI
             let score = 0;
             for (let row of tempBoard) {
                 for (let cell of row) {
-                    if (cell === 'white') score++;
-                    else if (cell === 'black') score--;
+                    if (cell === 'white') score++; // Increase score for white pieces
+                    else if (cell === 'black') score--; // Decrease score for black pieces
                 }
             }
-            return score;
+            return score; // Return the score
         }
 
         function checkGameOver() {
-            const validMoves = getValidMoves();
+            // Check if the game is over
+            const validMoves = getValidMoves(); // Get valid moves for the current player
             if (validMoves.length === 0) {
-                currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-                return getValidMoves().length === 0;
+                currentPlayer = currentPlayer === 'black' ? 'white' : 'black'; // Switch player
+                return getValidMoves().length === 0; // Check if the next player has valid moves
             }
-            return false;
+            return false; // Game is not over
         }
 
         function startGame() {
-    boardSize = parseInt(sizeSelect.value);
-    gameMode = modeSelect.value;
-    initializeBoard();
-    updateStatus();  
-    document.getElementById('controls').style.display = 'none';  
-}
+            // Start the game with selected settings
+            boardSize = parseInt(sizeSelect.value); // Get selected board size
+            gameMode = modeSelect.value; // Get selected game mode
+            initializeBoard(); // Initialize the board
+            updateStatus(); // Update the status display
+            document.getElementById('controls').style.display = 'none'; // Hide controls
+        }
 
         function resetGame() {
-            boardElement.classList.remove('visible');
-            document.getElementById('controls').style.display = 'block';  
-            resetButton.style.display = 'none';  
-            statusElement.style.visibility = 'hidden';  
-            scores = { black: 2, white: 2 }; 
-            currentPlayer = 'black'; 
-            gameEnded = false; 
+            // Reset the game to initial state
+            boardElement.classList.remove('visible'); // Hide the board
+            document.getElementById('controls').style.display = 'block'; // Show controls
+            resetButton.style.display = 'none'; // Hide reset button
+            statusElement.style.visibility = 'hidden'; // Hide status
+            scores = { black: 2, white: 2 }; // Reset scores
+            currentPlayer = 'black'; // Reset current player
+            gameEnded = false; // Reset game end flag
         }
 
         function toggleRules() {
+            // Toggle visibility of the rules section
             if (rulesElement.style.display === 'none' || rulesElement.style.display === '') {
-                rulesElement.style.display = 'block';
+                rulesElement.style.display = 'block'; // Show rules
             } else {
-                rulesElement.style.display = 'none';
+                rulesElement.style.display = 'none'; // Hide rules
             }
         }
 
-        // Event listeners
-        startButton.addEventListener('click', startGame);
-        resetButton.addEventListener('click', resetGame);
-        infoButton.addEventListener('click', toggleRules);
+        // Event listeners for buttons
+        startButton.addEventListener('click', startGame); // Start game when clicked
+        resetButton.addEventListener('click', resetGame); // Reset game when clicked
+        infoButton.addEventListener('click', toggleRules); // Toggle rules when clicked
 
         // Initialize the game (hide the board initially)
-        resetGame();
+        resetGame(); // Call reset to hide elements initially
     </script>
 </body>
 </html>
