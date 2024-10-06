@@ -1,6 +1,7 @@
 # 🎲 Othello Game Experience
 
-Welcome to my **Othello Game**! Here’s what you can look forward to:
+Welcome to my **Othello Game**! 👉 **[Play Here](https://tempestaethel.github.io/Othello/)**\
+Here’s what you can look forward to:
 
 ## 🌟 Stunning Visuals
 I’ve crafted an immersive interface with a beautiful gradient background that brings the game to life. The pieces and board are designed to grab your attention!
