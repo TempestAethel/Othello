@@ -222,14 +222,36 @@
         }
 
         function checkGameOver() {
-            // Check if the game is over
-            const validMoves = getValidMoves(); // Get valid moves for the current player
-            if (validMoves.length === 0) {
-                currentPlayer = currentPlayer === 'black' ? 'white' : 'black'; // Switch player
-                return getValidMoves().length === 0; // Check if the next player has valid moves
-            }
-            return false; // Game is not over
+    const validMoves = getValidMoves(); // Get valid moves for the current player
+    if (validMoves.length === 0) {
+        currentPlayer = currentPlayer === 'black' ? 'white' : 'black'; // Switch player
+        const nextValidMoves = getValidMoves(); // Check if the next player has valid moves
+        if (nextValidMoves.length === 0) {
+            // Both players have no valid moves, so the game is over
+            gameEnded = true;
+            const winner = scores.black > scores.white ? 'Black' : scores.white > scores.black ? 'White' : 'It\'s a tie!';
+            showToast(`Game Over! ${winner} wins! Final Score - Black: ${scores.black}, White: ${scores.white}`);
+            setTimeout(resetGame, 2000); // Reset the game after 2 seconds
+            return true; // End the game
         }
+    }
+    return false; // Game is not over
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast'; // Add a class for styling
+    toast.innerHTML = message;
+    document.body.appendChild(toast); // Append the toast to the body
+
+    // Set a timeout to hide and remove the toast after 2 seconds
+    setTimeout(() => {
+        toast.style.opacity = 0;
+        setTimeout(() => {
+            document.body.removeChild(toast); // Remove the toast from the DOM after fade out
+        }, 500);
+    }, 2000); // Toast visible for 2 seconds
+}
 
         function startGame() {
             // Start the game with selected settings
