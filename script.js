@@ -1,4 +1,3 @@
-
         const boardElement = document.getElementById('board'); // Reference to the board element
         const statusElement = document.getElementById('status'); // Reference to the status display
         const modeSelect = document.getElementById('mode'); // Reference to the game mode selection
